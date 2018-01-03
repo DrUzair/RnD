@@ -1,0 +1,73 @@
+{
+    "name": "Data Analysis Process",
+    "children": [
+        {   "name": "1. Initial Analysis","children": [
+                {"name": "1.1 Uni-Variate Analysis","children": [
+                    {"name": "Data Dictionary"},
+                    {"name": "Predictors and Target Variable"}
+                ]},
+                {"name": "1.2 Bi-Variate Analysis", "children": [
+                    {"name": "Pair-wise"},
+					{"name": "Correlation-Analysis", "children":[
+						{"name": "Spearman"},
+						{"name": "Pearson"}
+					]}
+                ]},
+                {"name": "1.3 Multivariate Analysis","children": [
+                    {"name": "ANOVA"},
+                    {"name": "Kruskal-Wallis"}
+                ]}                
+            ]
+        },
+        {	"name": "2. Exploratory Analysis", "children":[
+			{"name": "2.1 Transformation", "children":[{"name":"Normalization"}]},
+			{"name": "2.2 Decision Rules"},
+			{"name": "2.3 Sub-setting"},
+			{"name": "2.4 Cluster Analysis"},
+			{"name": "2.5 Feature Selection", "children":[{"name":"Forward Selection"},{"name":"Backward Elimination"},{"name":"Hybrid"}, {"name":"GINI Index"}, {"name":"Information Gain"}]},
+			{"name": "2.6 Dimensionality Reduction", "children":[{"name":"PCA"}]}
+		]},
+        {   "name": "3. Experimental Design", "children": [
+                {"name": "3.1 Train-Test Split"},
+                {"name": "3.2 k-Fold Cross Validation"},
+                {"name": "3.3 Class Imbalance","children": [
+                    {"name": "Oversampling"},
+                    {"name": "Under-sampling"}
+					]}
+            ]
+		},        
+        {   "name": "4. Modeling", "children": [
+                {"name": "4.1 Classification or Regression"},
+                {"name": "4.2 Linearity vs Non Linearity"},
+                {"name": "4.3 Measures"}
+            ]
+        },
+        {   "name": "5. Evaluation","children": [
+				{"name": "Regression","children":[
+                  {"name": "R-Squared"},
+                  {"name": "AIC"},
+                  {"name": "RMSE"}
+				]},
+				{"name": "classification", "children":[
+				  {"name": "Confusion Matrix"},
+				  {"name": "ROC"},
+				  {"name": "Accuracy"},
+				  {"name": "Precision"},
+				  {"name": "Recall"}
+				]}              
+            ]
+        },
+		{   "name": "6. Model Improvement", "children": [
+				{"name": "6.1 Very High Accuracy", "children":[
+                  {"name": "Over-fitting"},
+                  {"name": "Fixation Variables"}
+				]},
+				{"name": "6.2 Very Low Accuracy", "children":[
+					{"name": "New Variables"},
+					{"name": "More Variables"}
+				]}, 
+				{"name": "6.3 Next Iteration"}         
+            ]
+        }
+    ]
+}
