@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />	
+
+	<link type="text/css" rel="stylesheet" href="./jquery/layout/jquery.layout.1.4/layout-default-latest.css" />
+	<link rel="stylesheet" href="jstree/themes/default/style.css" />  		
+	 <link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" />
+	<style type="text/css">		
+	/* Properties of collapsible tree look&feel */
+		.link {
+				fill: none;
+				stroke: #ccc;
+				stroke-width: 2px;
+		}
+		.node circle {
+				fill: #fff;
+				stroke: steelblue;
+				stroke-width: 2px;
+		}	
+		
+	/* Properties of Entity Propert-Value Table (East Paenl) */
+	table {
+			font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+			border-collapse: collapse;
+			width: 100%;
+	}
+	table td, table th {
+			border: 1px solid #ddd;
+			padding: 8px;
+		}
+	table tr:nth-child(even){background-color: #f2f2f2;}
+
+	table tr:hover {background-color: #ddd;}
+
+	table th {
+			padding-top: 12px;
+			padding-bottom: 12px;
+			text-align: left;
+			background-color: #4CAF50;
+			color: white;
+	}
+	/* Overall layout structuring and intaraction handling of the KGVIZ main page */	
+		.ui-layout-north {
+			background:	#4da6ff;
+		}
+		
+		.ui-layout-west {}
+		.ui-layout-east {}	
+		.ui-layout-south {
+			padding:	10; /* IMPORTANT - remove padding so pane can 'collapse' to 0-width */
+		}	
+		.ui-layout-center > .wrapper {
+			padding:	5px;			
+		}
+		
+		.ui-layout-north		{ 	border-bottom-width:	2px; }
+		.ui-layout-south		{ 	border-top-width:		2px; }
+		.ui-layout-resizer-west { 	border-width:			0 1px; }
+		.ui-layout-resizer-south { 	border-width:			0 1px; }
+		.ui-layout-toggler-west { 	border-width:			0; }
+		.ui-layout-toggler-west div {
+			width:	8px;
+			height:	35px; /* 3x 35 = 105 total height */
+		}
+		.ui-layout-toggler-west .btnCenter1	{ background: #00C; }
+		.ui-layout-toggler-west .btnWest1	{ background: #090; }
+		.ui-layout-toggler-west .btnBoth1	{ background: #C00; }	
+		.ui-layout-toggler-east div {
+			width:	8px;
+			height:	35px; /* 3x 35 = 105 total height */
+		}
+	
+		.ui-layout-toggler-east .btnCenter2	{ background: #00C; }
+		.ui-layout-toggler-east .btnWest2	{ background: #090; }
+		.ui-layout-toggler-east .btnBoth2	{ background: #C00; }
+		
+		.ui-layout-toggler-south div {
+			width:	8px;
+			height:	35px; /* 3x 35 = 105 total height */
+		}	
+	/* Buttons */
+		.button {
+			background-color: #4CAF50; /* Green */
+			border: none;
+			color: white;
+			padding: 15px 32px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			vertical-align: top;
+		}
+		.buttonViewChanges {background-color: #008CBA;} 			
+	textarea {  
+		height:100%; 
+		width: 70%;	
+	}
+	
+	select { 
+		width: 100%; 
+		height: 97%; 
+		font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+		font-size: 16px;
+		
+	}
+	</style>
+
+	<script type="text/javascript" src="./jquery/ui/jquery-ui-1.11.4/external/jquery/jquery.js"></script>
+	<script type="text/javascript" src="./jquery/ui/jquery-ui-1.11.4/jquery-ui.js"></script>
+	<script type="text/javascript" src="./jquery/layout/jquery.layout.1.4/jquery.layout-latest.js"></script>
+	<script type="text/javascript" src="./jquery/assets/jquery.ui-contextmenu.min.js"></script>
+	<script type="text/javascript" src="http://static.jstree.com/3.0.2/assets/dist/jstree.min.js"></script>        	
+	<script type="text/javascript" src="topics_tree.js"></script>
+	
+	<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+	<script src="offering_contents_collapsibletree_zoomable.js"></script>	
+	<script type="text/javascript">
+
+	// TOGGLER CUSTOMIZATION SETTINGS
+	var toggleButtons_west_center	= '<div class="btnCenter1"></div>'
+								+ '<div class="btnBoth1"></div>'
+								+ '<div class="btnWest1"></div>';
+	
+	var toggleButtons_east_center	= '<div class="btnCenter2"></div>'
+								+ '<div class="btnBoth2"></div>'
+								+ '<div class="btnWest2"></div>';
+
+	$(document).ready(function(){
+			// CREATE THE LAYOUT
+			myLayout = $('body').layout({
+				resizeWhileDragging: 			true
+			,	sizable:						false
+			,	animatePaneSizing:				true
+			,	fxSpeed:						'fast'
+			,	north__size:					"10%"
+			,	west__size:						"20%"
+			,	east__size:						"25%"
+			,	south__size:					"15%"
+			,	spacing_open:					0
+			,	spacing_closed:					0
+			,	west__spacing_closed:			8
+			,	west__spacing_open:				6
+			,	west__togglerLength_closed:		105
+			,	west__togglerLength_open:		105
+			,	west__togglerContent_closed:	toggleButtons_west_center
+			,	west__togglerContent_open:		toggleButtons_west_center
+			,	east__spacing_closed:			8
+			,	east__spacing_open:				6
+			,	east__togglerLength_closed:		105
+			,	east__togglerLength_open:		105
+			,	east__togglerContent_closed:	toggleButtons_east_center
+			,	east__togglerContent_open:		toggleButtons_east_center
+			,	south__spacing_closed:			4
+			,	south__spacing_open:			4
+			});
+
+			// customize the west-toggler events
+			myLayout.togglers.west
+				// UN-BIND DEFAULT TOGGLER FUNCTIONALITY
+				.unbind("click")
+				// BIND CUSTOM WEST METHODS
+				.find(".btnCenter1")	.click( maximizeCenterWest ).attr("title", "Minimize Offerings Tree View")	.end()
+				.find(".btnWest1")	.click( maximizeWest )	.attr("title", "Maximize Offerings Tree View")		.end()
+				.find(".btnBoth1")	.click( defaultWest  ).attr("title", "Reset to default")	.end()		
+			;
+			myLayout.togglers.east
+				// UN-BIND DEFAULT TOGGLER FUNCTIONALITY
+				.unbind("click")
+				// BIND CUSTOM EAST METHODS		
+				.find(".btnCenter2")	.click( maximizeCenterEast ).attr("title", "Minimize Entity Propert-Value Table")	.end()
+				.find(".btnWest2")	.click( maximizeEast )	.attr("title", "Maximize Minimize Entity Propert-Value Table")		.end()
+				.find(".btnBoth2")	.click( defaultEast  ).attr("title", "Reset to default")	.end()
+			;
+		});
+
+		// TOGGLER METHODS
+		function maximizeCenterWest	(evt) { myLayout.close("west"); evt.stopPropagation(); };
+		function maximizeWest	(evt) { myLayout.sizePane("west", "100%"); myLayout.open("west"); evt.stopPropagation(); };
+		function defaultWest	(evt) { myLayout.sizePane("west",  "20%"); myLayout.open("west"); evt.stopPropagation(); };
+		
+		function maximizeCenterEast	(evt) { myLayout.close("east"); evt.stopPropagation(); console.log('resizing'); offeringContentsCollapsibleTree(); };
+		function maximizeEast	(evt) { myLayout.sizePane("east", "100%"); myLayout.open("east"); evt.stopPropagation(); };
+		function defaultEast	(evt) { myLayout.sizePane("east",  "25%"); myLayout.open("east"); evt.stopPropagation(); };
+		
+
+		// GENERIC HELPER FUNCTION
+		function sizePane (pane, size) {
+			myLayout.sizePane(pane, size);
+			myLayout.open(pane); // open pane if not already			
+		};
+
+    </script> 
+	<script type = "text/javascript" language = "javascript">					
+				prepare_offerings_json = function(){										
+					d3.json("dap.json", function(error, treeData) {
+						console.log(treeData);
+					});
+					document.getElementById("offering_jstree_compatible_json").value = temp;						
+					createJSTree4Offerings(); // offerings_tree.js		
+				}
+				$(document).ready(function() {						
+					prepare_offerings_json();	
+					document.getElementById('log_text_area').value = "SPARQL Endpoint: " + endpoint; 			
+					$('#selected_product_or_offering_name').contextmenu(						
+							{							
+								delegate: ".RightClickMenu",
+								menu: [
+									{title: "Add Lebel"} //, action: function(event, ui){}
+								]					
+							}	
+						);
+				});	
+						
+				add_label_to_entity = function(){
+					alert('are you serius !');
+				}
+				prepare_update_command = function(entity_type, entity_name, property_name, existing_property_value, changed_property_value){
+					var update_command = 	' DELETE { ' +entity_type+'\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}' +
+														' INSERT { ' +entity_type+'\\/'+ entity_name +' '+ property_name +' "' + changed_property_value + '"}' +
+														' WHERE  { ' +entity_type+'\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}';
+					
+					if (entity_type == 'PRODUCT'){
+						update_command = 	' DELETE { hw:product\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}' +
+														' INSERT { hw:product\\/'+ entity_name +' '+ property_name +' "' + changed_property_value + '"}' +
+														' WHERE  { hw:product\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}';								
+					} else if (entity_type == 'OFFERING'){
+						update_command = 	' DELETE { hw:offering\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}' +
+													' INSERT { hw:offering\\/'+ entity_name +' '+ property_name +' "' + changed_property_value + '"}' +
+													' WHERE  { hw:offering\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}';
+					} else if (entity_type == 'PLANITEM'){
+						update_command = 	' DELETE { hw:simpleprice\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}' +
+													' INSERT { hw:simpleprice\\/'+ entity_name +' '+ property_name +' "' + changed_property_value + '"}' +
+													' WHERE  { hw:simpleprice\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}';
+					} else if (entity_type == 'PLAN'){
+						update_command = 	' DELETE { hw:plan\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}' +
+													' INSERT { hw:plan\\/'+ entity_name +' '+ property_name +' "' + changed_property_value + '"}' +
+													' WHERE  { hw:plan\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}';
+					} else if (entity_type == 'SKUPRICE'){
+						update_command = 	' DELETE { hw:skuprice\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}' +
+													' INSERT { hw:skuprice\\/'+ entity_name +' '+ property_name +' "' + changed_property_value + '"}' +
+													' WHERE  { hw:skuprice\\/'+ entity_name +' '+ property_name +' "' + existing_property_value + '"}';
+					} else {
+						return '';
+					}
+					
+					return update_command;					
+				}
+				commitChanges = function()	{
+					console.log(JSON.stringify(changes_json))
+					for (key in changes_json["change_log"]){
+						var entity_name = changes_json["change_log"][key]["changed_entity"];
+						document.getElementById('log_text_area').value = document.getElementById('log_text_area').value + "\n" +
+														"Updating properties of " + entity_name + "\n"; 						
+						for(key2 in changes_json["change_log"][key]["changes"]){
+							var property_name = changes_json["change_log"][key]["changes"][key2]["property_name"];
+							var existing_property_value = changes_json["change_log"][key]["changes"][key2]["existing_property_value"];
+							var changed_property_value = changes_json["change_log"][key]["changes"][key2]["changed_property_value"].trim();							
+							var entity_type = document.getElementById("selected_node_type").value 
+							
+							var update_command = '';
+							
+							if (property_name == "rdfs:label"){
+								console.log("rdfs:label prop update");
+								changed_property_values = changed_property_value.split(',');
+								for(value in changed_property_values){
+									update_command = prepare_update_command(entity_type, 
+																			entity_name, 
+																			property_name, 
+																			existing_property_value, 
+																			changed_property_values[value].trim())
+									if(changed_property_values[value] == '')
+										update_command = update_command.substring(0, update_command.indexOf('INSERT')) + update_command.substring(update_command.indexOf('WHERE'));
+									else
+										update_command = update_command.substring(update_command.indexOf('INSERT'));
+									console.log(update_command);
+									sparqlUpdate(update_command, function(reply){						
+										document.getElementById('log_text_area').value = document.getElementById('log_text_area').value + "\n\t" + $($.parseHTML(reply)).text().trim();								
+										console.log('ok');
+									});
+								}
+							}else{
+								update_command = prepare_update_command(entity_type, entity_name, property_name, existing_property_value, changed_property_value)
+								if(update_command == '')
+									return;							
+								sparqlUpdate(update_command, function(reply){						
+									document.getElementById('log_text_area').value = document.getElementById('log_text_area').value + "\n\t" + $($.parseHTML(reply)).text().trim();								
+									console.log('ok');
+								});
+							}							
+						}					
+					} 
+					changes_json = JSON.parse('{"change_log":[]}');
+				}
+				viewChanges = function(){
+					$('#attrib_val_table').empty();						
+					$('#attrib_val_table').append("<table id= 'attrib_val_table' border='1'><tr><th>Property</th><th>Previous Value</th><th>New Value</th></tr>");											
+					document.getElementById("selected_product_or_offering_name").innerHTML = "Changed Entities";
+					for (key in changes_json["change_log"]){
+						var entity_name = changes_json["change_log"][key]["changed_entity"];						
+						var entity_type = changes_json["change_log"][key]["entity_type"];						
+						
+						if(entity_name.includes('-'))
+							entity_name = entity_name.substr(0, entity_name.lastIndexOf('-'));
+						
+						entity_name = decode_id_2_text(entity_name);						
+						document.getElementById('log_text_area').value = document.getElementById('log_text_area').value + "\n" +
+														"Updating properties of " + entity_name + "\n"; 																		
+						$('#attrib_val_table').append("<tr><td bgcolor='lightgrey' colspan='2'>"+entity_type +": "+ entity_name+"</td></tr>");						
+						for(key2 in changes_json["change_log"][key]["changes"]){
+							var property_name = changes_json["change_log"][key]["changes"][key2]["property_name"];
+							var existing_property_value = changes_json["change_log"][key]["changes"][key2]["existing_property_value"];
+							var changed_property_value = changes_json["change_log"][key]["changes"][key2]["changed_property_value"];
+							document.getElementById('log_text_area').value = document.getElementById('log_text_area').value + "\n" +
+																			"property_name " + property_name +
+																			" existing_property_value " + existing_property_value + 
+																			" changed_property_value " + changed_property_value + "\n"; 
+							$('#attrib_val_table').append("<tr><td>" + property_name + "</td><td>" + existing_property_value + "</td><td>" + changed_property_value + "</td></tr>");
+						}
+					}					
+				}				
+				createNewLabel = function() {
+					//$('#attrib_val_table').insertRow(1);
+					//$('<tr><td>Stuff</td></tr>').insertBefore('#attrib_val_table > tbody > tr:second');
+					$("#attrib_val_table tbody tr:2").prepend("<tr><td>...contents...</td></tr>");
+					console.log('row add atmptd');
+					//var cell1 = row.insertCell(0);
+					//var cell2 = row.insertCell(1);
+					//cell1.innerHTML = "NEW CELL1";
+					//cell2.innerHTML = "NEW CELL2";
+				}
+	</script>
+<head> 
+		<title>Knowledge Graph Visualization</title>
+</head>
+<body>	
+	<div class="ui-layout-north"><h1> <font color="white"> Knowledge Graph Visualization </font></h1></div> 
+	<div class="ui-layout-west">
+		<input type="hidden" id = "topics_jstree_compatible_json" value="NOTYET" />				
+		<input type="text" class="form-control" id = "search_offering_field" value="Search Offerings ..." onclick="this.value ='' " onblur= "this.value = 'Search Offerings ...'"/>
+		<div id="topics_tree_div">	</div>
+	</div> 
+	<div class="ui-layout-center" id="collapsible_tree_pane" style="overflow-y: hidden;">		
+		<p id="tree_space"></p>				
+	</div> 
+	<div class="ui-layout-east">
+		<p id="selected_product_or_offering_name" align="center"></p>
+		<button class="button" id="btnCreateLabel" onclick="createNewLabel()" style="display: none;">New Labels</button>		
+		<input type="hidden" id="selected_product_or_offering_id" align="center" value=''></input>
+		<input type="hidden" id="selected_node_type" align="center" value=''></input>
+		<table id="attrib_val_table"></table>
+		<input type="hidden" id = "attrib_val_table_cell_value_on_focus" value="" />
+		<input type="hidden" id = "offering_products_json" value="" />
+	</div> 
+	<div class="ui-layout-south">		
+		<button class="button" onclick="commitChanges()">Commit Changes</button>		
+		<button class="button buttonViewChanges" onclick="viewChanges()">View Changes</button>
+		<textarea id="log_text_area" rows="7" cols="100" />	
+	</div> 	
+</body>
+</html>
