@@ -12,11 +12,16 @@ A disruption or distraction to attention can be exogenous (outside phone) or ind
 2. Filtering distractions
 ..* Context Switching Cost
 ## Memory
+Smartphones and internet have caused *offloading* of memory function making the user less able to learn and retain the knowledge.
 The ability to commiting facts to long-term memory for later usage is dependent on knowing whether the information will be stored by computer or not. Dubbed as **[digital amnesia](amnesia.kaspersky.com/)** or **[Google effect](https://www.ncbi.nlm.nih.gov/pubmed/21764755/)**
 The symbiotic nature of relationship between technology and its users has morphed the memory into *where to find a fact*  instead of *what is a fact*. 
+Even the [point and shoot](https://www.ncbi.nlm.nih.gov/pubmed/24311477) culture of taking pictures affect the memory of an event. 
 ## Gratification Delay
+Reward processing capability of brain is another subject of investigation as a dependent variable of digital media technology.
+[First time smartphone usage](https://ac.els-cdn.com/S1935861X15004568/1-s2.0-S1935861X15004568-main.pdf?_tid=8eb0fe58-0b7e-11e8-96b4-00000aab0f26&acdnat=1517950062_4fde0f5e88fd29618210e7dafec459e4) is experimentally proven to have detrimental effects on the ability to let short-term rewards go for long-term substantial benifits.
 ## Analytical Abilities
-Ready and fingertip access to search engines cause decline in cognitive abilities [Brain in Pocket](https://www.sciencedirect.com/science/article/pii/S0747563215001272)
+Ready and fingertip access to search engines decline or even supplant the cognitive abilities [Brain in Pocket](https://www.sciencedirect.com/science/article/pii/S0747563215001272)
+
 # Attention and Technology Usage
 ## Attentional Deficit
 Deleterious effect of a distraction on **scope of attenion**
