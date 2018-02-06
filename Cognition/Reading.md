@@ -14,6 +14,6 @@ A disruption or distraction to attention can be exogenous (outside phone) or ind
 ## Gratification Delay
 # Attention and Technology Usage
 ## Attentional Deficit
-Deleterious effect of a distraction on $\textb{scope of attenion}$
+Deleterious effect of a distraction on *scope of attenion*
 ## Media Multitasking
 Simultaneous use of more than one media technologies. Media Multitasking Index (MMI) assesses an individuals media-multitasking habits.
