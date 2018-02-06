@@ -4,14 +4,13 @@
     1. [Attention](#Attention)
        1. [Attention Functions](#AttentionFuncs)
     2. [Memory](#Memory)
-    3. [Gratification Delay](##GratDelay)
-3. [Another paragraph](#paragraph2)
+    3. [Gratification Delay](#GratDelay)
+3. [Attention and Technology Usage](#AttentionTech)
+    1. [Attentional Deficit](#AttentionDeficit)
+    2. [Media and Multitasking](#Multitasking)
 
 ## This is the introduction <a name="introduction"></a>
-Smartphones and Cognition: A Review of Research Exploring the Links between Mobile Technology Habits and Cognitive Functioning
-Henry H. Wilmer, Lauren E. Sherman, and Jason M. Chein
-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5403814/
-Study the impact of smartphone usage on cognitive performance in short-term ongoing tasks and long-term consequences.
+[Smartphones and Cognition](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5403814/) A study on the impact of smartphone usage on cognitive performance in short-term ongoing tasks and long-term consequences.
 # Cognition Factors:<a name="CognitionFactors"></a>
 ## Attention
 <a name="Attention"></a>
@@ -37,7 +36,10 @@ Reward processing capability of brain is another subject of investigation as a d
 Ready and fingertip access to search engines decline or even supplant the cognitive abilities [Brain in Pocket](https://www.sciencedirect.com/science/article/pii/S0747563215001272)
 
 # Attention and Technology Usage
+<a name="AttentionTech"></a>
 ## Attentional Deficit
+<a name="AttentionDeficit"></a>
 Deleterious effect of a distraction on **scope of attenion**
 ## Media Multitasking
+<a name="Multitasking"></a>
 Simultaneous use of more than one media technologies. Media Multitasking Index (MMI) assesses an individuals media-multitasking habits.
