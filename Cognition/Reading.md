@@ -1,8 +1,8 @@
-# Table of contents
+# Cognition, Smartphones and Digital Media
 1. [Introduction](#introduction)
 2. [Cognition Factors](#CognitionFactors)
     1. [Attention](#Attention)
-     1. [Attention Functions](#AttentionFuncs)
+       1. [Attention Functions](#AttentionFuncs)
     2. [Memory](#Memory)
 3. [Another paragraph](#paragraph2)
 
@@ -22,8 +22,7 @@ A disruption or distraction to attention can be exogenous (outside phone) or ind
 1. Context Switching
 2. Filtering distractions
 ..* Context Switching Cost
-## Memory
-<a name="Memory"></a>
+## Memory <a name="Memory"></a>
 Smartphones and internet have caused *offloading* of memory function making the user less able to learn and retain the knowledge.
 The ability to commiting facts to long-term memory for later usage is dependent on knowing whether the information will be stored by computer or not. Dubbed as **[digital amnesia](amnesia.kaspersky.com/)** or **[Google effect](https://www.ncbi.nlm.nih.gov/pubmed/21764755/)**
 The symbiotic nature of relationship between technology and its users has morphed the memory into *where to find a fact*  instead of *what is a fact*. 
