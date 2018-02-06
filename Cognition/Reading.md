@@ -4,6 +4,7 @@
     1. [Attention](#Attention)
        1. [Attention Functions](#AttentionFuncs)
     2. [Memory](#Memory)
+    3. [Gratification Delay](##GratDelay)
 3. [Another paragraph](#paragraph2)
 
 ## This is the introduction <a name="introduction"></a>
@@ -27,7 +28,9 @@ Smartphones and internet have caused *offloading* of memory function making the 
 The ability to commiting facts to long-term memory for later usage is dependent on knowing whether the information will be stored by computer or not. Dubbed as **[digital amnesia](amnesia.kaspersky.com/)** or **[Google effect](https://www.ncbi.nlm.nih.gov/pubmed/21764755/)**
 The symbiotic nature of relationship between technology and its users has morphed the memory into *where to find a fact*  instead of *what is a fact*. 
 Even the [point and shoot](https://www.ncbi.nlm.nih.gov/pubmed/24311477) culture of taking pictures affect the memory of an event. 
+
 ## Gratification Delay
+<a name="GratDelay"></a>
 Reward processing capability of brain is another subject of investigation as a dependent variable of digital media technology.
 [First time smartphone usage](https://ac.els-cdn.com/S1935861X15004568/1-s2.0-S1935861X15004568-main.pdf?_tid=8eb0fe58-0b7e-11e8-96b4-00000aab0f26&acdnat=1517950062_4fde0f5e88fd29618210e7dafec459e4) is experimentally proven to have detrimental effects on the ability to let short-term rewards go for long-term substantial benifits.
 ## Analytical Abilities
