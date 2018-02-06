@@ -1,17 +1,29 @@
+# Table of contents
+1. [Introduction](#introduction)
+2. [Cognition Factors](#CognitionFactors)
+    1. [Attention](#Attention)
+     1. [Attention Functions](#AttentionFuncs)
+    2. [Memory](#Memory)
+3. [Another paragraph](#paragraph2)
+
+## This is the introduction <a name="introduction"></a>
 Smartphones and Cognition: A Review of Research Exploring the Links between Mobile Technology Habits and Cognitive Functioning
 Henry H. Wilmer, Lauren E. Sherman, and Jason M. Chein
 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5403814/
 Study the impact of smartphone usage on cognitive performance in short-term ongoing tasks and long-term consequences.
-# Cognition Factors:
+# Cognition Factors:<a name="CognitionFactors"></a>
 ## Attention
-Ability to focus on single source of information (input) and sustaind that focus. 
+<a name="Attention"></a>
+The ability to focus on single source of information (input) and sustaind that focus. 
 Attention can be divided or distracted by technology gadgets in two ways.
 A disruption or distraction to attention can be exogenous (outside phone) or indogenous (within phone).
 ### Attentional Functions
+<a name="AttentionFuncs"></a>
 1. Context Switching
 2. Filtering distractions
 ..* Context Switching Cost
 ## Memory
+<a name="Memory"></a>
 Smartphones and internet have caused *offloading* of memory function making the user less able to learn and retain the knowledge.
 The ability to commiting facts to long-term memory for later usage is dependent on knowing whether the information will be stored by computer or not. Dubbed as **[digital amnesia](amnesia.kaspersky.com/)** or **[Google effect](https://www.ncbi.nlm.nih.gov/pubmed/21764755/)**
 The symbiotic nature of relationship between technology and its users has morphed the memory into *where to find a fact*  instead of *what is a fact*. 
