@@ -45,7 +45,29 @@ class TrainModelTask(luigi.Task):
     output_file = luigi.Parameter(default='model.pkl')
 
     # TODO...
+    df_tweets = pd.read_csv("clean_data.csv", encoding='utf-8')
+    df_cities = pd.read_csv("cities.csv", encoding='utf-8')
 
+    df_tweets['city'] = df_tweets['tweet_coord']
+
+    for tweet_row in df_tweets.itertuples():
+        tweet_lat = float(tweet_row.tweet_coord.split(',')[0][1:])
+        tweet_lon = float(tweet_row.tweet_coord.split(',')[1][:-1])
+        df = df_cities[df_cities['latitude'] < (tweet_lat +.1)]
+        df = df[df['latitude'] > (tweet_lat - .1)]
+        df = df[df['longitude'] < (tweet_lon + .1)]
+        df = df[df['latitude'] > (tweet_lon - .1)]
+        tweet_city = ''
+        nearest_city_dist = float('inf')
+        for city_row_index, city_row in df.iterrows():
+            d = math.sqrt(math.pow(tweet_lat - city_row.latitude, 2) + math.pow(tweet_lon - city_row.longitude, 2))
+            if d < nearest_city_dist:
+                nearest_city_dist = d
+                tweet_city = city_row.asciiname
+        print('tweet_lat', tweet_lat, 'tweet_lon', tweet_lon, 'tweet_city', tweet_city)
+        df_tweets.ix[city_row_index, 'city'] = tweet_city
+
+        df_tweets.to_csv('df_tweets.csv', encoding='utf-8')
 
 class ScoreTask(luigi.Task):
     """ Uses the scored model to compute the sentiment for each city.
