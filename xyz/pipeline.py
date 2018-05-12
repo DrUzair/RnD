@@ -79,8 +79,8 @@ class TrainingDataTask(luigi.Task):
             print('tweet_lat', tweet_lat, 'tweet_lon', tweet_lon, 'tweet_city', tweet_city, 'city_lat', city_lat, 'city_lon', city_lon)
         df_tweets.ix[tweet_row_index, 'city'] = tweet_city
         df_tweets.ix[tweet_row_index, 'city_coord'] = str(city_lat)+', '+str(city_lon)
-    
-    
+        
+    df_tweets = pd.concat([df_tweets, pd.get_dummies(df_tweets['city'], prefix='city')], axis=1)
     df_tweets.to_csv('df_tweets.csv', encoding='utf-8')
 
 class TrainModelTask(luigi.Task):
