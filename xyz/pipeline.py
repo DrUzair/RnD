@@ -66,8 +66,8 @@ class TrainModelTask(luigi.Task):
                 tweet_city = city_row.asciiname
         print('tweet_lat', tweet_lat, 'tweet_lon', tweet_lon, 'tweet_city', tweet_city)
         df_tweets.ix[city_row_index, 'city'] = tweet_city
-
-        df_tweets.to_csv('df_tweets.csv', encoding='utf-8')
+    
+    df_tweets.to_csv('df_tweets.csv', encoding='utf-8')
 
 class ScoreTask(luigi.Task):
     """ Uses the scored model to compute the sentiment for each city.
