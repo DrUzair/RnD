@@ -1,6 +1,5 @@
-""" Rubikloud take home problem """
 import luigi
-
+import pandas as pd
 
 class CleanDataTask(luigi.Task):
     """ Cleans the input CSV file by removing any rows without valid geo-coordinates.
@@ -8,10 +7,18 @@ class CleanDataTask(luigi.Task):
         Output file should contain just the rows that have geo-coordinates and
         non-(0.0, 0.0) files.
     """
-    tweet_file = luigi.Parameter()
+    tweet_file = luigi.Parameter(default='airline_tweets.csv')
     output_file = luigi.Parameter(default='clean_data.csv')
 
-    # TODO...
+    def run(self):
+        df = pd.read_csv(self.tweet_file, encoding='utf-8')
+        df = df[df['tweet_coord'].notnull()]
+        df = df[df['tweet_coord'] != '[0.0, 0.0]']
+        df.to_csv(self.output_file, encoding='utf-8')
+        
+if __name__ == "__main__":
+    luigi.run(['CleanDataTask', '--workers', '1', '--local-scheduler'])
+
 
 
 class TrainingDataTask(luigi.Task):
