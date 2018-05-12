@@ -34,6 +34,9 @@ class TrainingDataTask(luigi.Task):
 
     # TODO...
     df_tweets = pd.read_csv("clean_data.csv", encoding='utf-8')
+    df_tweets["sentiment_code"]=df_tweets.airline_sentiment.astype("category")
+    df_tweets['sentiment_code']=df_tweets.sentiment_code.cat.codes
+
     df_cities = pd.read_csv("cities.csv", encoding='utf-8')
     
     df_tweets['city'] = df_tweets['tweet_coord']
