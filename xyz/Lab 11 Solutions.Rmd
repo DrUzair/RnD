@@ -1,0 +1,111 @@
+---
+title: "Variable Selection for Multiple Linear Regression in R"
+output: word_document
+---
+
+We will have some examples on variable selection for multiple linear regression. Please first of all install the needed packages with the install.packages() function. And then, call the following libraries.
+```{r}
+#install.packages('RCurl')
+#install.packages('MASS')
+#install.packages('leaps')
+library(RCurl) # getURL 
+library(MASS) # stepwise regression
+library(leaps) # all subsets regression
+```
+
+In our examples, we will use the following dataset:
+```{r}
+u <- getURL("http://vincentarelbundock.github.io/Rdatasets/csv/Ecdat/Computers.csv")
+c_prices <- read.csv(text = u)
+```
+
+We will split the dataset to 70% of training and 30% of test sets. We want to make sure that the training set and the test set do not have any common data points.
+```{r}
+rn_train <- sample(nrow(c_prices), floor(nrow(c_prices)*0.7))
+train <- c_prices[rn_train,]
+test <- c_prices[-rn_train,]
+```
+
+Let's build a multiple linear regression model to predict the 'price' variable. Let's use 'ram', 'screen', 'speed', 'hd' and 'ads' as independent variables. We will train our model on the training set and do the prediction on the test set.
+```{r}
+model_mlr <- lm(price~ram+speed+screen+hd+ads, data=train) 
+prediction <- predict(model_mlr, interval="prediction", newdata =test)
+```
+
+Let's see the errors and plot them on a histogram. 
+```{r}
+errors <- prediction[,"fit"] - test$price
+hist(errors)
+```
+
+Let's compute the root mean square error and find the percentage of cases with less than 25% error.
+```{r}
+rmse <- sqrt(sum((prediction[,"fit"] - test$price)^2)/nrow(test))
+rel_change <- abs(errors) / test$price
+rel_change <- abs(prediction[,"fit"]-test$price) / test$price
+pred25 <- table(rel_change<0.25)["TRUE"] / nrow(test)
+paste("RMSE:", rmse)
+paste("PRED(25):", pred25)
+```
+
+Let's build a simple linear regression model by using 'ram' as an independent variable. Compare the results with the multiple linear regression.
+```{r}
+rn_train <- sample(nrow(c_prices), floor(nrow(c_prices)*0.7))
+train <- c_prices[rn_train,c("price","ram")]
+test <- c_prices[-rn_train,c("price","ram")]
+model_ulm <- lm(price~ram, data=train) 
+prediction <- predict(model_ulm, interval="prediction", newdata =test)
+errors <- prediction[,"fit"] - test$price
+hist(errors)
+rmse <- sqrt(sum((prediction[,"fit"] - test$price)^2)/nrow(test))
+rel_change <- abs(errors) / test$price
+rel_change <- abs(prediction[,"fit"]-test$price) / test$price
+pred25 <- table(rel_change<0.25)["TRUE"] / nrow(test)
+paste("RMSE:", rmse)
+paste("PRED(25):", pred25)
+```
+Both Pred(25) and RMSE values are better for multiple linear regression.
+
+Let's now use the forward selection algorithm. We will start with 'null', which means none of the indepenent variables are selected. We will come up with a selection of independent variables between 'null' and 'full'. 'full' means all the independent variables are included. 
+```{r echo=TRUE}
+full <- lm(price~ram+hd+speed+screen+ads+trend,data=c_prices)
+null <- lm(price~1,data=c_prices)
+stepF <- stepAIC(null, scope=list(lower=null, upper=full), direction= "forward", trace=TRUE)
+summary(stepF)
+```
+We end up using all the variables. We set 'trace=TRUE' to see all the steps.
+
+We can also use 'backward' elimination, which will start with 'full'.
+```{r echo=TRUE}
+full <- lm(price~ram+hd+speed+screen+ads+trend,data=c_prices)
+stepB <- stepAIC(full, direction= "backward", trace=TRUE)
+summary(stepB)
+```
+We end up using all the variables. 
+
+Now, let's see the best combination of the 6 attributes.
+```{r}
+subsets<-regsubsets(price~ram+hd+speed+screen+ads+trend,data=c_prices, nbest=1,)
+sub.sum <- summary(subsets)
+as.data.frame(sub.sum$outmat)
+```
+In the output * denotes the included variables.
+The best combination of 4 attributes is: 'ram', 'speed', 'screen' and 'trend'.
+The best combination of 5 attributes is: 'ram', 'hd', 'speed', 'screen' and 'trend'.
+
+
+Q6) Price Prediction using k Nearest Neighbor Regression
+
+```{r}
+#install.packages('FNN')
+library(FNN)
+dataset <- rbind(c_prices, c(7000,0,32,90,8,15,'no','no','yes',200,2))  
+
+dataset.numeric <- sapply( dataset[,2:11], as.numeric )
+#Should convert data to numeric to use knn.reg
+dataset.numeric <- as.data.frame(dataset.numeric)
+prediction <- knn.reg(dataset.numeric[1:nrow(c_prices),-1], 
+                      test = dataset.numeric[nrow(c_prices)+1,-1],
+                      dataset.numeric[1:nrow(c_prices),]$price, k = 7 , algorithm="kd_tree")  
+prediction$pred
+```
