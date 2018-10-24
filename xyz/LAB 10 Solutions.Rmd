@@ -1,0 +1,78 @@
+---
+title: "LAB 11 KNN"
+output: word_document
+---
+install.packages("class")
+install.packages("gmodels")
+library(class)
+library(gmodels)
+
+Detecting Prostate Cancer
+```{r}
+prc <- read.csv("Prostate_Cancer.csv",stringsAsFactors = FALSE)  #This command imports the required data set and saves it to the prc data frame.
+```
+```{r}
+str(prc)    
+```
+```{r}
+prc <- prc[-1]  #removes the first variable(id) from the data set.
+```
+The data set contains patients who have been diagnosed with either Malignant (M) or Benign (B) cancer.
+```{r}
+table(prc$diagnosis_result)  # it helps us to get the numbers of patients
+```
+The variable diagnosis_result is our target variable i.e. this variable will determine the results of the diagnosis based on the 8 numeric variables.
+In case we wish to rename B as ”Benign” and M as “Malignant” and see the results in the percentage form, we may write:
+```{r}
+prc$diagnosis <- factor(prc$diagnosis_result, levels = c("B", "M"), labels = c("Benign", "Malignant"))
+round(prop.table(table(prc$diagnosis)) * 100, digits = 1)  # it gives the result in the percentage form rounded of to 1 decimal place( and so it’s digits = 1)
+```
+# Normalizing numeric data
+This feature is importance since the scale used for the values for each variable might be different. The best practice is to normalize the data and transform all the values to a common scale.
+```{r}
+normalize <- function(x) {
+               return ((x - min(x)) / (max(x) - min(x))) }
+```
+Once we run this code, we are required to normalize the numeric features in the data set. Instead of normalizing each of the 8 individual variables we use:
+```{r}
+prc_n <- as.data.frame(lapply(prc[2:9], normalize))
+```
+The first variable in our data set (after removal of id) is ‘diagnosis_result’ which is not numeric in nature. So, we start from 2nd variable. The function lapply() applies normalize() to each feature in the data frame. The final result is stored to prc_n data frame using as.data.frame() function.
+Let’s check using the variable ‘radius’ whether the data has been normalized.
+```{r}
+summary(prc_n$radius)
+```
+Creating training and test data set:
+The kNN algorithm is applied to the training data set and the results are verified on the test data set.
+For this, we would  divide the data set into 2 portions in the ratio of 65: 35 (assumed) for the training and test data set respectively.
+We shall divide the prc_n data frame into prc_train and prc_test data frames
+```{r}
+prc_train <- prc_n[1:65,]
+prc_test <- prc_n[66:100,]
+```
+Our target variable is ‘diagnosis_result’ which we have not included in our training and test data sets.
+```{r}
+prc_train_labels <- prc[1:65, 1]
+prc_test_labels <- prc[66:100, 1]   #This code takes the diagnosis factor in column 1 of the prc data frame and on turn creates prc_train_labels and prc_test_labels data frame.
+```
+The knn () function needs to be used to train a model for which we need to install a package ‘class’. The knn() function identifies the k-nearest neighbors using Euclidean distance where k is a user-specified number.
+Now we are ready to use the knn() function to classify test data
+```{r}
+prc_test_pred <- knn(train = prc_train, test = prc_test,cl = prc_train_labels, k=10)
+```
+knn() returns a factor value of predicted labels for each of the examples in the test data set which is then assigned to the data frame prc_test_pred.
+```{r}
+CrossTable(x=prc_test_labels, y=prc_test_pred, prop.chisq=FALSE)
+```
+The test data consisted of 35 observations. 
+The first raw and first column section of the table tells us the number of cases which have been accurately predicted (TN->True Negatives) as Benign (B).
+The second raw and second column section of the table tells us the nunber of cases which have been accurately predicted (TP-> True Positives) as Malignant (M).
+The second raw and first column section of the table tells us the number of cases which  actually are malignant in nature but got predicted as benign.(FN-> False Negatives)
+The first raw and second column section of the table tells us the number cases of False Positives (FP) meaning the cases were actually Benign in nature but got predicted as Malignant.  
+The total accuracy of the model is calculated by (TN+TP)/35.
+
+Improve the performance of the model
+This can be taken into account by repeating the previous steps by changing the k-value. Also remember, to keep the value of FN’s as low as possible.
+
+Reference: http://discuss.analyticsvidhya.com/t/practice-data-set-for-knn-algorithm/3104
+
