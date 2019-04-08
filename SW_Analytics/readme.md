@@ -1,7 +1,15 @@
-Software Analytics are processes to optimize the resource constrained exploration of large code bases for insights and prediction of defects.
+# Software Analytics 
+are processes to optimize the resource constrained exploration of large codebases for insights and prediction of defects. Product managers need to allocate limited testing resouces to preempt costly failures. In order to extract useful predictors from a codebase requires extensive data mining to enable predictive modeling.
 
-D3JS Visualization GUI of Complexity Metrics for a source code repository. 
-- 
+# Visualization GUI of Complexity Metrics for a source code repository. 
+- Static code attributes
+- McCabes complexity measures
+- HalStead complexity measures
+
+# Tools
+- D3JS 
+- HTML, PhP, Javasctip
+
 using bug databases to learn defect predictors that guide
 inspection teams to where the code is most likely to fail
 and to classify changes as clean or buggy;
