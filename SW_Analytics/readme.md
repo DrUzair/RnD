@@ -1,4 +1,5 @@
-Software Analytics 
+Software Analytics are processes to optimize the resource constrained exploration of large code bases for insights and prediction of defects.
+
 D3JS Visualization GUI of Complexity Metrics for a source code repository. 
 - 
 using bug databases to learn defect predictors that guide
