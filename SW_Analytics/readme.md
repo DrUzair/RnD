@@ -1,7 +1,8 @@
 # Software Analytics 
-are processes to optimize the resource constrained exploration of large codebases for insights and prediction of defects. Product managers need to allocate limited testing resouces to preempt costly failures. In order to extract useful predictors from a codebase requires extensive data mining to enable predictive modeling.
+are processes to optimize the resource constrained exploration of large codebases for insights and prediction of defects. Product managers need to allocate limited testing resouces to preempt costly failures and guide software quality predictions. In order to extract useful predictors from a codebase requires extensive data mining to enable predictive modeling. 
 
 # Visualization GUI of Complexity Metrics for a source code repository. 
+Despite debateable usefulness, simple code attributes are an important piece of a complete insights. Combined in probabilistic framework, such metrics outperform the traditional defect prediction methods.
 - Static code attributes
 - McCabes complexity measures
 - HalStead complexity measures
