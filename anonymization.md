@@ -2,7 +2,9 @@
 Data anonymization, also known as psudeonymization, refers to a family of techniques that make it impossible or impractical to identify a data subject.
 
 GDPR defines anonymized data as “data rendered anonymous in such a way that the data subject is not or no longer identifiable.”
-**Recital 26** 
+
+## **[GDPR Recital 26](https://gdpr-info.eu/recitals/no-26/)** 
+
 1. The principles of data protection should apply to any information concerning an identified or identifiable natural person. 2. Personal data which have undergone pseudonymisation, which could be attributed to a natural person by the use of additional information should be considered to be information on an identifiable natural person. 
 3. To determine whether a natural person is identifiable, account should be taken of all the means reasonably likely to be used, such as singling out, either by the controller or by another person to identify the natural person directly or indirectly. 
 4. To ascertain whether means are reasonably likely to be used to identify the natural person, account should be taken of all objective factors, such as the costs of and the amount of time required for identification, taking into consideration the available technology at the time of the processing and technological developments. 
@@ -20,10 +22,8 @@ The data based enterprises, both controllers and processors, who opt to choose d
 
 
 # References
-[Primer](https://iapp.org/news/a/looking-to-comply-with-gdpr-heres-a-primer-on-anonymization-and-pseudonymization/)
-
-[No Silver Bullet](http://randomwalker.info/publications/no-silver-bullet-de-identification.pdf)
-
-[Robust De-anonymization of Large Sparse Datasets](https://www.cs.utexas.edu/~shmat/shmat_oak08netflix.pdf)
-
-[Broken Promises of Privacy: Responding to the Surprising Failure of Anonymization](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006)
+1. [Recital26](https://gdpr-info.eu/recitals/no-26/)
+2. [Primer](https://iapp.org/news/a/looking-to-comply-with-gdpr-heres-a-primer-on-anonymization-and-pseudonymization/)
+3. [No Silver Bullet](http://randomwalker.info/publications/no-silver-bullet-de-identification.pdf)
+4. [Robust De-anonymization of Large Sparse Datasets](https://www.cs.utexas.edu/~shmat/shmat_oak08netflix.pdf)
+5. [Broken Promises of Privacy: Responding to the Surprising Failure of Anonymization](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006)
