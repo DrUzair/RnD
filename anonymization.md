@@ -1,4 +1,4 @@
-# Data Anonymization
+# Data Anonymization: Concepts and Techniques
 
 Data anonymization, also known as psudeonymization, refers to a family of techniques that make it impossible or impractical to identify a data subject.
 
@@ -29,6 +29,8 @@ As obvious as it may seem, but GDPR has particularly defined what constitutes *p
 
 *The data subjects are identifiable if they can be directly or indirectly identified, especially by reference to an identifier such as a name, an identification number, location data, an online identifier or one of several special characteristics, which expresses the physical, physiological, genetic, mental, commercial, cultural or social identity of these natural persons. In practice, these also include all data which are or can be assigned to a person in any kind of way. For example, the telephone, credit card or personnel number of a person, account data, number plate, appearance, customer number or address are all personal data.*
 
+## Anonymization
+
 ## [Pseudonymisation](https://gdpr-info.eu/recitals/no-28/)
 
 Pseudonymisation is the process and techniques of de-identifying personal data by substituting it with psuedo information that allows analysis and processing but a natural person can not be identified with that information. It is not as strict as anonymization. Pseudonymizing creates a new attribute that link personal identifiers with psuedonymized data to enable de-anonymization later. The links then become a proxy for real information and get protected by the data controllers while transformed data can be *legaly* stored, processed and transfered.
@@ -38,6 +40,15 @@ GDPR recital 28 notes as following:
 *The application of pseudonymisation to personal data can reduce the risks to the data subjects concerned and help controllers and processors to meet their data-protection obligations. 
 2. The explicit introduction of ‘pseudonymisation’ in this Regulation is not intended to preclude any other measures of data protection.*
 
+
+# Techniques
+
+## Agrggregation
+Release overall statistics about distribution of data instead of original elements.
+## Interactive 
+Administrators answer directed questions on behalf of researchers, instead of releasing data in its entirety; 
+## Differential
+adding carefully calibrated noise to the data.
 
 # Limitations and Threats
 The advantages of anonymization and psudonymization have been acknowleded widely due to the practicalility within legal frameworks. However, achieving absolute anonymization is still fraught with challenges and set backs.
