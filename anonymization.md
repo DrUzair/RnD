@@ -1,12 +1,29 @@
-# Data Anonymization: Concepts and Techniques
-
+# Data Anonymization: People, Technology and Regulations
 Data anonymization, also known as psudeonymization, refers to a family of techniques that make it impossible or impractical to identify a data subject.
+
+## [Privacy Act, Canada](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/02_05_d_15/#heading-0-0-2-1)
+The Privacy Act offers protections for personal information, which it defines as any recorded information “about an identifiable individual.”
+
+## [PIPEDA, Canada](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/)
+The Personal Information Protection and Electronic Documents Act (PIPEDA), sets the ground rules for how private-sector organizations collect, use, and disclose personal information in the course of for-profit, commercial activities across Canada.
+
+The definition of personal information differs somewhat under PIPEDA or the Privacy Act but generally, it can mean information about your:
+
+- race, national or ethnic origin, religion,
+age, marital status,
+medical, education or employment history,
+- financial information,
+- DNA,
+- identifying numbers such as your social insurance number, or driver’s licence,
+views or opinions about you as an employee.
+
+## [GDPR, EU](https://gdpr-info.eu)
 
 Compliance to General Data Protection Regulation (**GDPR**) has increased the importance of data anonymization because GPPR relaxes it stringent requirements if effective measures are taken to de-identify the people in data. If executed properly, the regulations allow processing, storage and communication of anonymized data.
 
 GDPR defines anonymized data as “information which does not relate to an identified or identifiable natural person or to personal data rendered anonymous in such a manner that the data subject is not or no longer identifiable.”
 
-## **[GDPR Recital 26](https://gdpr-info.eu/recitals/no-26/)** 
+### **[GDPR, EU Recital 26](https://gdpr-info.eu/recitals/no-26/)** 
 
 1. The principles of data protection should apply to any information concerning an identified or identifiable natural person. 
 
@@ -80,12 +97,14 @@ The demand for improving anonymization techiques to protect privacy has gained t
 
 
 # References
-1. [GDPR Recital26](https://gdpr-info.eu/recitals/no-26/)
-2. [Anonymization Primer](https://iapp.org/news/a/looking-to-comply-with-gdpr-heres-a-primer-on-anonymization-and-pseudonymization/)
-3. [No Silver Bullet](http://randomwalker.info/publications/no-silver-bullet-de-identification.pdf)
-4. [Robust De-anonymization of Large Sparse Datasets](https://www.cs.utexas.edu/~shmat/shmat_oak08netflix.pdf)
-5. [Broken Promises of Privacy: Responding to the Surprising Failure of Anonymization](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006)
-6. [GDPR definition of Personal Data](https://gdpr-info.eu/issues/personal-data/)
-7. [Recital 28: pseudonymisation](https://gdpr-info.eu/recitals/no-28/)
-8. [The Netflix Prize](http://www.netflixprize.com/rules)
+1. [Privacy Act, Canada](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/02_05_d_15/#heading-0-0-2-1)
+2. [PIPEDA, Canada](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/)
+3. [GDPR Recital26](https://gdpr-info.eu/recitals/no-26/)
+4. [Anonymization Primer](https://iapp.org/news/a/looking-to-comply-with-gdpr-heres-a-primer-on-anonymization-and-pseudonymization/)
+5. [No Silver Bullet](http://randomwalker.info/publications/no-silver-bullet-de-identification.pdf)
+6. [Robust De-anonymization of Large Sparse Datasets](https://www.cs.utexas.edu/~shmat/shmat_oak08netflix.pdf)
+7. [Broken Promises of Privacy: Responding to the Surprising Failure of Anonymization](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006)
+8. [GDPR definition of Personal Data](https://gdpr-info.eu/issues/personal-data/)
+9. [Recital 28: pseudonymisation](https://gdpr-info.eu/recitals/no-28/)
+10. [The Netflix Prize](http://www.netflixprize.com/rules)
 
