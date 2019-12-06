@@ -87,5 +87,5 @@ The demand for improving anonymization techiques to protect privacy has gained t
 5. [Broken Promises of Privacy: Responding to the Surprising Failure of Anonymization](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006)
 6. [GDPR definition of Personal Data](https://gdpr-info.eu/issues/personal-data/)
 7. [Recital 28: pseudonymisation](https://gdpr-info.eu/recitals/no-28/)
-8. [The Netflix Prize](The Netflix Prize Rules, http://www.netflixprize.com/rules)
+8. [The Netflix Prize](http://www.netflixprize.com/rules)
 
