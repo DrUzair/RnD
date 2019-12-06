@@ -29,7 +29,11 @@ As obvious as it may seem, but GDPR has particularly defined what constitutes *p
 
 *The data subjects are identifiable if they can be directly or indirectly identified, especially by reference to an identifier such as a name, an identification number, location data, an online identifier or one of several special characteristics, which expresses the physical, physiological, genetic, mental, commercial, cultural or social identity of these natural persons. In practice, these also include all data which are or can be assigned to a person in any kind of way. For example, the telephone, credit card or personnel number of a person, account data, number plate, appearance, customer number or address are all personal data.*
 
+## [Pseudonymisation](https://gdpr-info.eu/recitals/no-28/)
 
+GDPR recital 28 notes as following:
+*1. The application of pseudonymisation to personal data can reduce the risks to the data subjects concerned and help controllers and processors to meet their data-protection obligations. 
+2. The explicit introduction of ‘pseudonymisation’ in this Regulation is not intended to preclude any other measures of data protection.*
 
 
 # Limitations
@@ -43,3 +47,4 @@ As obvious as it may seem, but GDPR has particularly defined what constitutes *p
 4. [Robust De-anonymization of Large Sparse Datasets](https://www.cs.utexas.edu/~shmat/shmat_oak08netflix.pdf)
 5. [Broken Promises of Privacy: Responding to the Surprising Failure of Anonymization](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006)
 6. [GDPR definition of Personal Data](https://gdpr-info.eu/issues/personal-data/)
+7. [Recital 28: pseudonymisation](https://gdpr-info.eu/recitals/no-28/)
