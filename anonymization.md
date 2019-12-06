@@ -31,8 +31,11 @@ As obvious as it may seem, but GDPR has particularly defined what constitutes *p
 
 ## [Pseudonymisation](https://gdpr-info.eu/recitals/no-28/)
 
+Pseudonymisation is the process and techniques of de-identifying personal data by substituting it with psuedo information that allows analysis and processing but a natural person can not be identified with that information. It is not as strict as anonymization. Pseudonymizing creates a new attribute that link personal identifiers with psuedonymized data to enable de-anonymization later. The links then become a proxy for real information and get protected by the data controllers while transformed data can be *legaly* stored, processed and transfered.
+
 GDPR recital 28 notes as following:
-*1. The application of pseudonymisation to personal data can reduce the risks to the data subjects concerned and help controllers and processors to meet their data-protection obligations. 
+
+*The application of pseudonymisation to personal data can reduce the risks to the data subjects concerned and help controllers and processors to meet their data-protection obligations. 
 2. The explicit introduction of ‘pseudonymisation’ in this Regulation is not intended to preclude any other measures of data protection.*
 
 
