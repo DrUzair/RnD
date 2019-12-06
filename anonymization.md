@@ -67,9 +67,16 @@ Utility-Privacy trade-off is a fundamental struggle between learning from data a
 The advantages of anonymization and psudonymization have been acknowleded widely due to the practicalility within legal frameworks. However, achieving absolute anonymization is still fraught with challenges and set backs.
 The deanonymization or reidentifycation of a person from anonymysed data has been contested with many scientific studies. Starting with Paul Ohm's [article](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006), the discourse and critic of foolproof anonymization is gaining significant momentum.
 
+## Famour Anonymiztion Failures
 
+Read more about large scale failures of privacy protection by anonymization.
 
+### AOL Search Strings
+### GIC Insurance Medical records
+### Netflix User data
 
+# Conclusion
+The demand for improving anonymization techiques to protect privacy has gained tremendous momentum and resultingly creating business oppertunities for data based enterprises. On the other hand, research on adversarial attacks to reidentify individuals from the anonymyzed data has seen exemplary progress. Exponential growth of data volume has made the data mining an essential need for policy guidance, private business and public good. It remains to be seen how technology progress will help balance the scale between depressing privacy risks and endless intelligence rewards possible through data mining.
 
 
 # References
@@ -80,3 +87,5 @@ The deanonymization or reidentifycation of a person from anonymysed data has bee
 5. [Broken Promises of Privacy: Responding to the Surprising Failure of Anonymization](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006)
 6. [GDPR definition of Personal Data](https://gdpr-info.eu/issues/personal-data/)
 7. [Recital 28: pseudonymisation](https://gdpr-info.eu/recitals/no-28/)
+8. [The Netflix Prize](The Netflix Prize Rules, http://www.netflixprize.com/rules)
+
