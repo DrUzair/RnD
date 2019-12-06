@@ -61,7 +61,8 @@ adding carefully calibrated noise to the data.
 The advantages of anonymization and psudonymization have been acknowleded widely due to the practicalility within legal frameworks. However, achieving absolute anonymization is still fraught with challenges and set backs.
 The deanonymization or reidentifycation of a person from anonymysed data has been contested with many scientific studies. Starting with Paul Ohm's [article](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006), the discourse and critic of foolproof anonymization is gaining significant momentum.
 
-1. Aggressive anonymiztion significanlty reduces the data potential for conducting meaningful research.
+1. Utility-Privacy Trade-off
+Aggressive anonymiztion significanlty reduces the data potential for conducting meaningful research.
 
 
 
