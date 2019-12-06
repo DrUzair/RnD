@@ -45,30 +45,36 @@ GDPR recital 28 notes as following:
 In consideration of compliance to applicable privacy laws for releasing data, a variety of techniques are applied while releasing information about data.
 
 
-## Vanilla
+## Filtering
 - Remove data a field that can uniquely identify a person, i.e. *birth date*.
 - Remove data fields that in combination can uniquely identify a person, i.e. *time of arrival, gender, age, marital status* 
-- 
-## Agrggregation
-Release overall statistics about distribution of data instead of original elements.
-## Interactive 
-Administrators answer directed questions on behalf of researchers, instead of releasing data in its entirety; 
-## Differential
-adding carefully calibrated noise to the data.
+## Generalization 
+- Instead of removing potentially identifying fields, the controller or processsor can use general terms, *birth year instead of birthdate* to protect privacy.
 
-# Limitations and Threats
+## Agrggregation
+- Release overall statistics about distribution of data instead of original elements.
+
+## Interactive 
+- Administrators answer directed questions on behalf of researchers, instead of releasing data in its entirety; 
+
+## Differential
+- adding carefully calibrated noise to the data.
+
+# Limitations
+
+Utility-Privacy trade-off is a fundamental struggle between learning from data and protecting privacy. Aggressive anonymiztion significanlty reduces the data potential for conducting meaningful research.
 
 The advantages of anonymization and psudonymization have been acknowleded widely due to the practicalility within legal frameworks. However, achieving absolute anonymization is still fraught with challenges and set backs.
 The deanonymization or reidentifycation of a person from anonymysed data has been contested with many scientific studies. Starting with Paul Ohm's [article](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006), the discourse and critic of foolproof anonymization is gaining significant momentum.
 
-1. Utility-Privacy Trade-off
-Aggressive anonymiztion significanlty reduces the data potential for conducting meaningful research.
+
+
 
 
 
 # References
-1. [Recital26](https://gdpr-info.eu/recitals/no-26/)
-2. [Primer](https://iapp.org/news/a/looking-to-comply-with-gdpr-heres-a-primer-on-anonymization-and-pseudonymization/)
+1. [GDPR Recital26](https://gdpr-info.eu/recitals/no-26/)
+2. [Anonymization Primer](https://iapp.org/news/a/looking-to-comply-with-gdpr-heres-a-primer-on-anonymization-and-pseudonymization/)
 3. [No Silver Bullet](http://randomwalker.info/publications/no-silver-bullet-de-identification.pdf)
 4. [Robust De-anonymization of Large Sparse Datasets](https://www.cs.utexas.edu/~shmat/shmat_oak08netflix.pdf)
 5. [Broken Promises of Privacy: Responding to the Surprising Failure of Anonymization](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006)
