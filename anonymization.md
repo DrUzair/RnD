@@ -44,8 +44,11 @@ GDPR recital 28 notes as following:
 # Techniques
 In consideration of compliance to applicable privacy laws for releasing data, a variety of techniques are applied while releasing information about data.
 
+
 ## Vanilla
-Remove data fields that can uniquely identify a person, i.e. *birth date*.
+- Remove data a field that can uniquely identify a person, i.e. *birth date*.
+- Remove data fields that in combination can uniquely identify a person, i.e. *time of arrival, gender, age, marital status* 
+- 
 ## Agrggregation
 Release overall statistics about distribution of data instead of original elements.
 ## Interactive 
@@ -54,8 +57,11 @@ Administrators answer directed questions on behalf of researchers, instead of re
 adding carefully calibrated noise to the data.
 
 # Limitations and Threats
+
 The advantages of anonymization and psudonymization have been acknowleded widely due to the practicalility within legal frameworks. However, achieving absolute anonymization is still fraught with challenges and set backs.
 The deanonymization or reidentifycation of a person from anonymysed data has been contested with many scientific studies. Starting with Paul Ohm's [article](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1450006), the discourse and critic of foolproof anonymization is gaining significant momentum.
+
+1. Aggressive anonymiztion significanlty reduces the data potential for conducting meaningful research.
 
 
 
