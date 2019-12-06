@@ -42,7 +42,10 @@ GDPR recital 28 notes as following:
 
 
 # Techniques
+In consideration of compliance to applicable privacy laws for releasing data, a variety of techniques are applied while releasing information about data.
 
+## Vanilla
+Remove data fields that can uniquely identify a person, i.e. *birth date*.
 ## Agrggregation
 Release overall statistics about distribution of data instead of original elements.
 ## Interactive 
