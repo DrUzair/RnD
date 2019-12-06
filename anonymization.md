@@ -1,4 +1,5 @@
 # Data Anonymization
+
 Data anonymization, also known as psudeonymization, refers to a family of techniques that make it impossible or impractical to identify a data subject.
 
 Compliance to General Data Protection Regulation (**GDPR**) has increased the importance of data anonymization because GPPR relaxes it stringent requirements if effective measures are taken to de-identify the people in data. If executed properly, the regulations allow processing, storage and communication of anonymized data.
@@ -20,7 +21,15 @@ GDPR defines anonymized data as “information which does not relate to an ident
 6. **This Regulation does not therefore concern the processing of such anonymous information, including for statistical or research purposes.**
 
 The data based enterprises, both controllers and processors, who opt to choose data anonymization are not completely safe from stepping across regulatory bounds.
+
 # Concepts
+
+## [Personal Information](https://gdpr-info.eu/issues/personal-data/)
+As obvious as it may seem, but GDPR has particularly defined what constitutes personal informaion.
+
+*The data subjects are identifiable if they can be directly or indirectly identified, especially by reference to an identifier such as a name, an identification number, location data, an online identifier or one of several special characteristics, which expresses the physical, physiological, genetic, mental, commercial, cultural or social identity of these natural persons. In practice, these also include all data which are or can be assigned to a person in any kind of way. For example, the telephone, credit card or personnel number of a person, account data, number plate, appearance, customer number or address are all personal data.*
+
+
 
 # Limitations
 
