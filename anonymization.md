@@ -1,6 +1,7 @@
 # Data Anonymization: People, Technology and Regulations
 Data anonymization, also known as psudeonymization, refers to a family of techniques that make it impossible or impractical to identify a data subject.
 
+# Regulations
 ## [Privacy Act, Canada](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/02_05_d_15/#heading-0-0-2-1)
 The Privacy Act offers protections for personal information, which it defines as any recorded information “about an identifiable individual.”
 
