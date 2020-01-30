@@ -1,0 +1,897 @@
+---
+title: "Fuel Economoy EDA"
+author: "Uzair Ahmad"
+date: '2019-12-06'
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{R, load_libraries, message=F, warning=F}
+# library(downloader)
+library(corrplot)
+library(ggplot2)
+library(lubridate)
+library(sqldf)
+library(splus2R)
+library(stringr)
+# library(vcd)
+# library(reshape2)
+# library(Metrics)
+# library(caret) 
+```
+
+# Connceting Data, Information and Knowledge
+Typically answering question:
+- How has the fuel economy changed over time? 
+- Are there any other interesting insights or trends?
+
+# EDA {.tabset .tabset-fade .tabset-pills}
+
+## Dataset
+
+### The Fuel Economogy dataset 
+
+- 42002 Rows
+- x Variables
+
+```{r, echo=FALSE}
+# download(url="https://www.fueleconomy.gov/feg/epadata/vehicles.csv.zip", dest='vehicles.csv.zip', mode="wb") 
+# unzip ("vehicles.csv.zip", exdir = "./")
+# vhcls_data = read.csv('./vehicles.csv')
+```
+
+```{R, echo=FALSE}
+vhcls_data = read.csv('https://raw.githubusercontent.com/DrUzair/MLSD/master/Datasets/vehicles.csv')
+summary(vhcls_data)
+```
+
+## The Dependent Variable
+
+#### UCity
+
+Definition
+  - UCity - unadjusted city MPG for fuelType1;
+  - UCityA - unadjusted city MPG for fuelType2;
+
+- Remarks
+  - The median UCity (21.30) seems to be unchanged over the years
+
+```{R, echo=FALSE}
+summary(vhcls_data$UCity)
+ggplot(vhcls_data, aes(x=year, y=UCity, group=year)) + geom_boxplot() + ggtitle("UCity~year") + xlab("Year") + ylab("UCity") 
+```
+
+  - The right-skewed distribution of UCity tells a tale of a different class of vehicles in last ten years
+
+```{R, echo=FALSE}
+hist(vhcls_data$UCity)
+```
+
+  - There are 169 vehicles having UCity > 75. And as was expected, dominant majority (150+) are Electric vehicles.
+
+```{R}
+gt75_UCity <- vhcls_data[vhcls_data$UCity > 75,]
+#gt75_UCity[, c('displ', 'make', 'model', 'fuelType')]
+barplot(summary(gt75_UCity$fuelType), main=paste0('fuelType of UCity > 75, Total ', nrow(gt75_UCity)), xlab='fuelType', ylab='Vehicles')
+```
+  
+  - 25 zero UCity vehicles: 
+  
+```{R, echo=FALSE}
+vhcls_data_0_Ucity <- vhcls_data[vhcls_data$UCity == 0,]
+nrow(vhcls_data_0_Ucity)
+vhcls_data_0_Ucity[, c('make', 'model', 'fuelType', 'atvType')]
+```
+
+## Independent Variables {.tabset .tabset-fade .tabset-pills}
+
+### Numeric {.tabset .tabset-fade .tabset-pills}
+
+#### atvType
+
+- Definition
+
+  - type of alternative fuel or advanced technology vehicle
+- Remarks
+  
+  - Missing values: The atvType information for majority 38248(91%) of the vehicles is **Not Avilable**. Replacing NA's to Not Available for possible use in modeling.
+
+```{R}
+vhcls_data$atvType <- as.factor(ifelse(str_length(vhcls_data$atvType)==0, 'Not Available', as.character(vhcls_data$atvType)))
+print(data.frame(summary(vhcls_data$atvType)))
+```
+
+  - Remaining 3708 vehicles plot on time scale exhibit three trends
+  - Sharp drop in diesel vehicles to the lowest in late nineties and slight pick-up later
+  - A strong rise in FFV (dual fuel vehicles) during 2000-2010 period and the a sharp drop to the lowest 
+
+```{R}
+vhcls_data_atvType_Available <- vhcls_data[vhcls_data$atvType!='Not Available',]
+year_atvType <- sqldf('select count(atvType) as Total, atvType, year from vhcls_data_atvType_Available group by year, atvType')
+unique(year_atvType$atvType)
+ ggplot(year_atvType, aes(x=year, y=Total, color=atvType)) + 
+  geom_line(size=1)  +
+  theme(legend.position="right") +
+  ggtitle("Vehicles atvType_Available") +
+  xlab("-- Years -->") + ylab("Total") 
+```
+
+  - Post 2010, a consistent rising trend of Hybrid fuel and EV vehicles.
+
+
+  - Looking at idividual etvTypes w.r.t. UCity, the Hybrid fuel and EV vehicles are strong predictors.
+
+```{R, echo=FALSE}
+boxplot(UCity~year, vhcls_data[vhcls_data$atvType=='EV',], main='EV', ylim=c(0, 300))
+boxplot(UCity~year, vhcls_data[vhcls_data$atvType=='Diesel',], main='Diesel', ylim=c(0, 300))
+boxplot(UCity~year, vhcls_data[vhcls_data$atvType=='FFV',], main='FFV', ylim=c(0, 300))
+boxplot(UCity~year, vhcls_data[vhcls_data$atvType=='Not Available',], main='Not Available', ylim=c(0, 300))
+boxplot(UCity~year, vhcls_data[vhcls_data$atvType=='CNG',], main='CNG', ylim=c(0, 300))
+boxplot(UCity~year, vhcls_data[vhcls_data$atvType=='Hybrid',], main='Hybrid', ylim=c(0, 300))
+# 
+# ggplot(vhcls_data, aes(x=atvType, y=UCity)) + 
+#   geom_boxplot()  +
+#   geom_jitter(width=0.1,alpha=0.2)  +
+#   #theme(legend.position="right") +
+#   ggtitle("UCity~atvType") +
+#   xlab("atvType") + ylab("UCity") 
+```
+
+  - Depending on the limited number of vehicles, it's not safe to generalize above trends to all vehicels. Therefore, I'm inclined to drop this attribute as it as but with NA's treatment, it has significant prediction power.
+
+#### barrelsA08
+
+- Definitions
+  
+  - barrels08 - annual petroleum consumption in barrels for fuelType1 
+  - barrelsA08 - annual petroleum consumption in barrels for fuelType2 
+
+- Remarks
+  
+  - The median annual petroleum consumption (barrels08) is start to decrease post 2010.
+
+```{r}
+ggplot(vhcls_data, aes(x=year, y=barrels08, group=year)) + geom_boxplot() + ggtitle("barrels08~year") + xlab("Year") + ylab("UCity") 
+ggplot(vhcls_data, aes(x=year, y=barrelsA08, group=year)) + geom_boxplot() + ggtitle("barrelsA08~year") + xlab("Year") + ylab("UCity") 
+#vhcls_data[vhcls_data$barrelsA08 > 1, c('atvType','make', 'drive', 'year', 'cylinders')]
+```
+
+#### chargeXXXX
+
+- Definition
+  - charge120 : time to charge an electric vehicle in hours at 120 V
+  - charge240 : time to charge an electric vehicle in hours at 240 V
+  - charge240b : time to charge an electric vehicle in hours at 240 V using the alternate charger
+
+- Remarks
+  - There are no vehicles with 120 V charging. Drop this variable.
+  - charge240: 252 vehicles. All non-EVs (39829) are having zero value for this variable.
+  - charge240: 62 vehicles. All non-EVs (39829) are having zero value for this variable.
+  - Due to nearly zero variance of charge columns, i am inclined to drop them off from model.
+  - Just out of interest; the correlation between UCity and charge240 ? 
+  
+  ```{R}
+summary(vhcls_data$charge120)
+boxplot(vhcls_data$charge240)
+nrow(vhcls_data[vhcls_data$charge240 != 0, ])
+nrow(vhcls_data[vhcls_data$charge240b != 0, ])
+summary(vhcls_data$charge240b)
+```
+
+#### cityXXXX
+
+- Definitions
+  - city08 : city MPG for fuelType1 
+  - city08U : unrounded city MPG for fuelType1 
+  - cityA08 : city MPG for fuelType2 
+  - cityA08U : unrounded city MPG for fuelType2 
+  - cityCD - city gasoline consumption (gallons/100 miles) in charge depleting mode (4)
+  - cityE - city electricity consumption in kw-hrs/100 miles
+  - cityUF - EPA city utility factor (share of electricity) for PHEV
+  - phevCity - EPA composite gasoline-electricity city MPGe for plug-in hybrid vehicles
+- Remarks
+  - city08 is strongly correlated (0.9971) with UCity. Since UCity is actually unadjusted city MPG for fuelType1, including this variable in the model means to including UCity in the independent variables. 
+
+```{R, echo=FALSE}
+city_cors <- cor(vhcls_data[ , c('city08', 'city08U', 'cityA08', 'cityA08U', 'cityE', 'cityUF', 'phevCity','UCity')])
+corrplot(city_cors, tl.cex=1)
+plot(vhcls_data[, c('UCity', 'city08')], main='city08~UCity')
+plot(vhcls_data[, c('UCity', 'city08')], main='city08~UCity')
+```
+
+  - Such variables are **fixation variables** which produce *too good to be true* results. However the predictions are not actually predictions but a 1 to 1 mapping table. drop city08 from the model.
+
+  - other city mpg variables are mostly present for post 2010 (for EV and Hybrid vehicles)
+```{R}
+ggplot(vhcls_data, aes(x=year, y=city08, group=year)) + geom_boxplot() + ggtitle("city08~year") + xlab("Year") + ylab("city08") 
+ggplot(vhcls_data, aes(x=year, y=city08U, group=year)) + geom_boxplot() + ggtitle("city08U~year") + xlab("Year") + ylab("city08U") 
+ggplot(vhcls_data, aes(x=year, y=cityA08, group=year)) + geom_boxplot() + ggtitle("cityA08~year") + xlab("Year") + ylab("cityA08") 
+ggplot(vhcls_data, aes(x=year, y=cityA08U, group=year)) + geom_boxplot() + ggtitle("cityA08U~year") + xlab("Year") + ylab("cityA08U") 
+ggplot(vhcls_data, aes(x=year, y=phevCity, group=year)) + geom_boxplot() + ggtitle("phevCity~year") + xlab("Year") + ylab("phevCity") 
+lm(UCity~phevCity, vhcls_data)
+
+```
+
+#### co2XXXX
+
+- Definition
+  - co2 - tailpipe CO2 in grams/mile for fuelType1 
+  - co2A - tailpipe CO2 in grams/mile for fuelType2
+  - co2TailpipeAGpm - tailpipe CO2 in grams/mile for fuelType2 
+  - co2TailpipeGpm- tailpipe CO2 in grams/mile for fuelType1
+- Remarks
+  - 31954 vehicles don't have co2 information. Represented as -1.
+  - Few vehicles pre-2013 have co2 information
+  - Premium and Regular fuelType vehicle are top co2 emitters
+
+```{R, echo=FALSE}
+no_co2_vhcls <- nrow(vhcls_data[vhcls_data$co2==-1 , ])
+print(no_co2_vhcls)
+ggplot(vhcls_data, aes(x=year, y=co2, group=year)) + geom_boxplot() + ggtitle("co2~year")
+ggplot(vhcls_data, aes(x=year, y=co2A, group=year)) + geom_boxplot() + ggtitle("co2A~year")
+ggplot(vhcls_data, aes(x=year, y=co2TailpipeAGpm, group=year)) + geom_boxplot() + ggtitle("co2TailpipeAGpm~year")
+```
+  
+  - Interestingly, 168 EVs also reporting co2. 
+  - But 168 EVs report zero co2, just boasting ?
+  - Correlation between UCity and co2 is strongly negative. (-0.75). Which means, at least for the 10k~ vehicles in the dataset, higher emission levels give lower mpg. More energy less miles.  
+
+```{R, echo=FALSE}
+vhcls_data_co2 <- vhcls_data[vhcls_data$co2 != -1, c('fuelType', 'co2', 'UCity')]
+co2_ucity <- cor(vhcls_data_co2$co2, vhcls_data_co2$UCity)
+plot(vhcls_data_co2[,c('co2','UCity')], main=paste0('co2 ~ ucity ', round(co2_ucity,4)))
+```
+
+```{R, echo=FALSE}
+co2_fuelType <- data.frame(Count=summary(vhcls_data_co2$fuelType))
+barplot(co2_fuelType$Count, main='Vehicles with co2 information', xlab='fuelType', ylab='Vehicles', names.arg=rownames(co2_fuelType), cex.names=1, las=2)
+ggplot(vhcls_data_co2, aes(x=fuelType, y=co2, group=fuelType)) + geom_boxplot(aes(color=fuelType)) + ggtitle("co2~fuelType")
+nrow(vhcls_data_co2[vhcls_data_co2$fuelType == 'Electricity', c('co2')])
+boxplot(vhcls_data_co2[vhcls_data_co2$fuelType == 'Electricity', c('co2')])
+```
+
+#### cylinders
+
+- Definition
+  - engine cylinders
+- Remarks
+  - 171 NA's
+```{R, echo=FALSE}
+summary(vhcls_data$cylinders)
+```
+
+  - Treated as continuous variable which makes no sense. Type should be cast to categorical.
+  - 2     3     4     5     6     8    10    12    16 cylender vehicles.
+  - most vehicles (30k+) have 4, 6, 8 cylinders
+
+```{R, echo=FALSE}
+summary(vhcls_data$cylinders)
+vhcls_data$cylinders_cat <- as.factor(vhcls_data$cylinders)
+barplot(summary(vhcls_data$cylinders_cat))
+cor(vhcls_data[
+  complete.cases(
+    vhcls_data[, c('UCity', 'cylinders')]
+  ), c('UCity', 'cylinders')], method='spearman')
+```
+
+  - cylinders are negatively correlated with UCity. (-0.8157), which indicates the bigger the vehicle the less the miles per gallon. Make sense.
+  - 4, 6 and 8 cylinders vehicles are getting slightly better on UCity in recent years
+
+```{R, echo=FALSE} 
+for (cylinders in c(2, 3, 4, 5, 6, 8, 10, 12, 16)) {
+  boxplot(UCity~year, vhcls_data[vhcls_data$cylinders_cat==cylinders,], main=paste0(cylinders, ' Cylinders Vehivles'), ylim=c(0, 200))
+}
+```
+
+#### displ
+
+- Definition
+
+  - Displacement, combined volume of the pistons inside the cylinders
+- Remarks
+
+  - negatively correlated to UCity (spearman, -0.846), which makes sense. The larger the engine (more cylinders), the less the UCity/MPG.
+  
+```{R, echo=FALSE}
+displ_ucity <- vhcls_data[complete.cases(vhcls_data[,c('displ', 'UCity')]), c('displ', 'UCity')]
+plot(displ_ucity, main= paste0('cor(disp, ucity) ', round(cor(displ_ucity, method='spearman')[1,2], 4)))
+# ## The Odd Case. replace 0 with NA
+vhcls_data$displ <- ifelse(vhcls_data$displ == 0, NA, vhcls_data$displ)
+# 
+#sum(is.na(vhcls_data$displ)) # 170
+# 
+vhcls_data$displ_cat <- as.factor(vhcls_data$displ)
+displ_ucity <- vhcls_data[complete.cases(vhcls_data[,c('displ_cat', 'UCity')]), c('displ_cat', 'UCity')]
+plot(displ_ucity, main= paste0('cor(disp_cat, ucity) ', round(cor(as.numeric(displ_ucity$displ_cat), displ_ucity$UCity, method='spearman'), 4)))
+barplot(summary(vhcls_data$displ_cat), xlab='displ category', ylab='Vehicles Count', main='Displacement Factorized')
+```
+  
+  - displ variable has missing values for the EV vehicles. It should be like this.
+  
+  - Replacing missing values with 'NULL' and making dspl as a **factor** is going to help make better sense of this variable.
+
+  - **One Odd Case** is of an EV vehicle with displacement value zero. Making it 'NULL' is necessary. 
+
+  - **Alternatively** replace all NA's with zero. That is consisstent with reality. EV has zero displacement. In addition, DT/LM will be happier with displ being numeric variable.
+
+  - over the years, displ distributions is not changing noticeably.
+
+```{R, echo=FALSE}
+vhcls_data$displ_num <- as.numeric(ifelse(is.na(vhcls_data$displ), 0, vhcls_data$displ))
+ggplot(vhcls_data, aes(x=year, y=displ_num, group=year)) + geom_boxplot() + ggtitle("disp_num~year") + xlab("Year") + ylab("disp_num")
+```
+
+#### evMotor 
+
+- Definition
+  - electric motor (kw-hrs)
+- Remarks
+  - 141 types of motors, 
+  - 38345 vehicles don't have any
+  - 736 EV, Hybrid, Plug-in Hybrid atvType vehicles have evMotors
+  - A strong overfitting predictor for high UCity
+    - evMotors like '88 kW AC PMSM' are outperforming UCity measure, including such variable into model can lead to overfitting.
+
+```{R, evMotor, echo=FALSE}
+# summary(vhcls_data$evMotor)
+# levels(vhcls_data$evMotor)
+non245V_motors <- vhcls_data[vhcls_data$evMotor != "", ]
+unique(non245V_motors[, c('atvType')])
+nrow(non245V_motors)
+vhcls_data$evMotor_Bin <- ifelse(vhcls_data$evMotor == "", 'noMotor', 'evMotor' )
+# summary(as.factor(vhcls_data$evMotor_Bin))
+lm(UCity~evMotor_Bin, vhcls_data)
+lm(UCity~evMotor, vhcls_data)
+```
+
+
+#### feScore
+
+- Definition
+  - feScore: EPA Fuel Economy Score,
+
+- Remarks
+  - available only for 8054 post-2012 vehicles.
+  - 32027 Pre-(including) 2012 vihicles feScore is -1
+  - Although numeric, better to treat it as categorical variable
+
+```{R}
+vhcls_data$feScore_cat <- as.factor(vhcls_data$feScore)
+summary(vhcls_data$feScore_cat)
+nrow(vhcls_data[vhcls_data$feScore != -1, ])
+ggplot(vhcls_data, aes(x=year, y=feScore, group=year)) + geom_boxplot() + ggtitle("feScore~year")
+cor(vhcls_data$feScore, vhcls_data$UCity)
+plot(vhcls_data$feScore, vhcls_data$UCity, xlab='feScore', ylab='UCity', main='cor(feScore~UCity) 0.40')
+```
+
+
+#### combXXXX
+
+- Definitions
+  - comb08 : combined MPG for fuelType1 
+  - comb08U : unrounded combined MPG for fuelType1 
+  - combA08 : combined MPG for fuelType2
+  - combA08U : unrounded combined MPG for fuelType2
+  - combE : combined electricity consumption in kw-hrs/100 miles
+  - combinedCD : combined gasoline consumption (gallons/100 miles) in charge depleting mode (4)
+  - combinedUF : EPA combined utility factor (share of electricity) for PHEV
+- Remarks
+  - comb08 strongly correlated (0.9839) with UCity
+  - Other comb variables are limited to last few year.
+
+```{R}
+comb_cors <- cor(vhcls_data[ , c('comb08', 'comb08U', 'combA08', 'combA08U', 'combE', 'combinedCD', 'combinedUF', 'UCity')])
+corrplot(comb_cors, tl.cex=1)
+ggplot(vhcls_data, aes(x=year, y=comb08, group=year)) + geom_boxplot() + ggtitle("comb08~year") + xlab("Year") + ylab("comb08")
+ggplot(vhcls_data, aes(x=year, y=comb08U, group=year)) + geom_boxplot() + ggtitle("comb08U~year") + xlab("Year") + ylab("comb08U")
+ggplot(vhcls_data, aes(x=year, y=combA08, group=year)) + geom_boxplot() + ggtitle("combA08~year") + xlab("Year") + ylab("combA08")
+ggplot(vhcls_data, aes(x=year, y=combA08U, group=year)) + geom_boxplot() + ggtitle("combA08U~year") + xlab("Year") + ylab("combA08U")
+ggplot(vhcls_data, aes(x=year, y=combE, group=year)) + geom_boxplot() + ggtitle("combE~year") + xlab("Year") + ylab("combE")
+ggplot(vhcls_data, aes(x=year, y=combinedCD, group=year)) + geom_boxplot() + ggtitle("combinedCD~year") + xlab("Year") + ylab("combinedCD")
+ggplot(vhcls_data, aes(x=year, y=combinedUF, group=year)) + geom_boxplot() + ggtitle("combinedUF~year") + xlab("Year") + ylab("combinedUF")
+# 
+# cor(vhcls_data[, c('UCity', 'comb08', 'comb08U','combA08', 'combA08U', 'combE', 'combinedCD', 'combinedUF')])
+# plot(vhcls_data[, c('UCity', 'comb08')], main='comb08~UCity')
+```
+
+
+#### fuelCostXX
+
+- Definition 
+
+  - fuelCost08 - annual fuel cost for fuelType1
+  - fuelCostA08 - annual fuel cost for fuelType2
+
+- Remarks
+
+  - As expected, fuelCost is strongly correlated with barrels08 (0.9256)
+  - Post2012 the median fuelCost08 is starting to decrease slowly but noticeably
+  - fuelCostA08 pre 2000 is non-existent.
+  - EV, Hybrid and Plug-in Hybrid are least expensive i.t.o fuelCost08 
+
+```{R fuelCost}
+summary(vhcls_data$fuelCost08)
+# cor(vhcls_data$fuelCost08, vhcls_data$barrels08)
+# plot(vhcls_data$fuelCost08, vhcls_data$barrels08)
+# 
+# ggplot(vhcls_data, aes(x=year, y=fuelCost08, group=year)) + geom_boxplot() + ggtitle("fuelCost08~year")
+# ggplot(vhcls_data, aes(x=year, y=fuelCostA08, group=year)) + geom_boxplot() + ggtitle("fuelCostA08~year")
+# ggplot(vhcls_data, aes(x=atvType, y=fuelCost08, group=atvType)) + geom_boxplot(aes(x=atvType, y=fuelCost08))
+```
+
+
+#### fuelTypeX
+- Definition
+
+  - fuelType : fuel type with fuelType1 and fuelType2 (if applicable)
+  - fuelType1 : fuel type 1. For single fuel vehicles, this will be the only fuel. For dual fuel vehicles, this will be the conventional fuel.
+  - fuelType2 : fuel type 2. For dual fuel vehicles, this will be the alternative fuel (e.g. E85, Electricity, CNG, LPG). For single fuel vehicles, this field is not used
+
+```{R, fuelType, echo=FALSE}
+fuelType_ <- sqldf('select count(*) as Total, year, fuelType from vhcls_data group by year, fuelType order by fuelType')
+ggplot(fuelType_, aes(x=year, y=Total, group=fuelType)) +
+  geom_line(aes(linetype=fuelType, color=fuelType))+
+  geom_point(aes(shape=fuelType))+
+  theme(legend.position="right") +
+  ggtitle("Single Fuel (fuelType1) Vehicles") +
+  xlab("-- Years -->") + ylab("Total")
+fuelType_1 <- sqldf('select count(*) as Total, year, fuelType1 from vhcls_data group by year, fuelType1 order by fuelType1')
+ggplot(fuelType_1, aes(x=year, y=Total, group=fuelType1)) +
+  geom_line(aes(linetype=fuelType1, color=fuelType1))+
+  geom_point(aes(shape=fuelType1))+
+  theme(legend.position="right") +
+  ggtitle("Single Fuel (fuelType1) Vehicles") +
+  xlab("-- Years -->") + ylab("Total")
+# 
+fuelType_2 <- sqldf('select count(*) as Total, year, fuelType2 from vhcls_data group by year, fuelType2 order by fuelType2')
+ggplot(fuelType_2, aes(x=year, y=Total, group=fuelType2)) +
+  geom_line(aes(linetype=fuelType2, color=fuelType2))+
+  geom_point(aes(shape=fuelType2))+
+  theme(legend.position="right") +
+  ggtitle("Dual Fuel (fuelType2) Vehicles") +
+  xlab("-- Years -->") + ylab("Total")
+```
+
+#### ghgScoreX
+
+- Definition 
+
+  - EPA GHG score for dual fuel vehicle running on the alternative fuel (-1 = Not available)
+
+- Remarks
+
+  - just like feScore, there are 32027 vehicles without ghgScore (represented as -1)
+  - Available for onle 8054 vehicles
+  - Both feScore and ghgScore are almost copies of each other (cor 0.99), 
+
+```{R, ghgScore, echo=FALSE}
+ghg_cors <- cor(vhcls_data[, c('feScore', 'ghgScore', 'UCity')])
+corrplot(ghg_cors, tl.cex=1)
+```
+
+  - 32027 vehicles without ghgScore
+  - 9990 vehicles with ghgScore available
+
+```{R, echo=FALSE}
+vhcls_data$ghgScore_cat <- as.factor(vhcls_data$ghgScore)
+summary(vhcls_data$ghgScore_cat)
+nrow(vhcls_data[vhcls_data$ghgScore_cat != -1, ])
+```
+
+  - Over the year ghgScore progression
+
+```{R, echo=FALSE}
+ggplot(vhcls_data, aes(x=year, y=ghgScore_cat, group=year)) + geom_boxplot() + ggtitle("ghgScore_cat~year")
+```
+
+  - ghgScore ~ UCity
+
+```{R, echo=FALSE}
+cor(vhcls_data$ghgScore, vhcls_data$UCity)
+plot(vhcls_data$ghgScore_cat, vhcls_data$UCity, xlab='feScore', ylab='UCity', main='cor(ghgScore_cat~UCity) 0.40')
+```
+
+- drop candidate.
+
+
+#### highwayXXXX
+
+- Definitions
+
+  - highway08 - highway MPG for fuelType1 
+  - highway08U - unrounded highway MPG for fuelType1 
+  - highwayA08 - highway MPG for fuelType2 
+  - highwayA08U - unrounded highway MPG for fuelType2
+  - highwayCD - highway gasoline consumption (gallons/100miles) in charge depleting mode 
+  - highwayE - highway electricity consumption in kw-hrs/100 miles
+  - highwayUF - EPA highway utility factor (share of electricity) for PHEV
+  - UHighway - unadjusted highway MPG for fuelType1; see the description of the EPA test procedures
+  - UHighwayA - unadjusted highway MPG for fuelType2; see the description of the EPA test procedures
+
+- Remarks
+  - highway08, UHighway strongly correlated (0.9257, 0.9245) with UCity
+  - highway08, UHighway are 0.99 correlated
+  - other highway variables are limited to last f
+
+```{R, hwy, echo=FALSE}
+hwy_cors <- cor(vhcls_data[ , c('highway08', 'highway08U', 'highwayA08', 'highwayA08U', 'highwayCD','highwayE','highwayUF','UHighway', 'UHighwayA','UCity')])
+corrplot(hwy_cors)
+# ggplot(vhcls_data, aes(x=year, y=highway08, group=year)) + geom_boxplot() + ggtitle("highway08~year") + xlab("Year") + ylab("highway08") 
+# ggplot(vhcls_data, aes(x=year, y=highway08U, group=year)) + geom_boxplot() + ggtitle("highway08U~year") + xlab("Year") + ylab("highway08U") 
+# ggplot(vhcls_data, aes(x=year, y=highwayA08, group=year)) + geom_boxplot() + ggtitle("highwayA08~year") + xlab("Year") + ylab("highwayA08") 
+# ggplot(vhcls_data, aes(x=year, y=highwayA08U, group=year)) + geom_boxplot() + ggtitle("highwayA08U~year") + xlab("Year") + ylab("highwayA08U") 
+# 
+# cor(vhcls_data[, c('UCity', 'highway08', 'highway08U','highwayA08', 'highwayA08U')])
+# plot(vhcls_data[, c('UCity', 'highway08')], main='highway08~UCity')
+```
+
+#### volume hlv, hpv, lv2, lv4, pv2, pv4
+
+- Definition
+  - hlv - hatchback luggage volume (cubic feet) 
+  - hpv - hatchback passenger volume (cubic feet) 
+  - lv2 - 2 door luggage volume (cubic feet)
+  - lv4 - 4 door luggage volume (cubic feet)
+  - pv2 - 2-door passenger volume (cubic feet) 
+  - pv4 - 4-door passenger volume (cubic feet)
+
+- Remarks
+```{R, echo=FALSE}
+# nrow(vhcls_data[vhcls_data$hlv == 0, ])
+# nrow(vhcls_data[vhcls_data$hpv == 0, ])
+# nrow(vhcls_data[vhcls_data$lv2 == 0, ])
+# nrow(vhcls_data[vhcls_data$lv4 == 0, ])
+# nrow(vhcls_data[vhcls_data$pv2 == 0, ])
+# nrow(vhcls_data[vhcls_data$pv2 == 0, ])
+```
+  - 35240 vehicles don't have hlv, hpc, lv2, lv4 information (zero)
+  - 35531 vehicles don't have pv2, pv4 information (zero)
+  - hlv~hpv 0.933 
+  - There is a mild correlation between UCity and hlv or hpv
+  - There is very weak correlation between UCity and lv2, lv4, pv2, pv4
+```{R, echo=FALSE}
+vol_cors <- cor(vhcls_data[, c('hlv', 'hpv', 'lv2', 'lv4', 'pv2', 'pv4', 'UCity')])
+corrplot(vol_cors)
+```
+  
+```{R, hlv_hpv, echo=FALSE}
+hist(vhcls_data$hpv)
+hist(vhcls_data$hlv)
+ggplot(vhcls_data, aes(x=year, y=hlv, group=year)) + geom_boxplot() + ggtitle("hlv~year") + xlab("Year") + ylab("hlv")
+ggplot(vhcls_data, aes(x=year, y=hpv, group=year)) + geom_boxplot() + ggtitle("hpv~year") + xlab("Year") + ylab("hpv")
+```
+- Drop cadidate
+
+#### range
+
+Definition
+  - range NOT in the dictionary but present in the data
+  
+Remarks
+
+  - 39913 vehicles don't have range information (rep as zero)
+```{R, echo=FALSE}
+summary(vhcls_data$range)
+```
+
+  - For remaining 168 vehicles range is strongly correlated with UCity (0.60)
+    - The correlation is not reliable because the distribution is heteroskedastic
+```{R, echo=FALSE}
+range_vhcls <- vhcls_data[vhcls_data$range != 0, c('range', 'rangeA', 'atvType')]
+nrow(range_vhcls)
+cor(vhcls_data$range, vhcls_data$UCity)
+plot(vhcls_data$UCity, vhcls_data$range)
+```
+
+  - The 168 vehicles with range value are all EV
+```{R, echo=FALSE}
+unique(range_vhcls$atvType)
+```
+
+
+#### rangeXXX
+
+- Definition
+
+  - rangeA - EPA range for fuelType2
+  - rangeCityA - EPA city range for fuelType2
+  - rangeHwyA - EPA highway range for fuelType2
+
+- Remarks
+
+  - 38539 vehicles don't have rangeA values ""
+  - Rest 1542 vehicles are atvType in (Bifuel (CNG), FFV, Bifuel (LPG)   Plug-in Hybrid))
+
+```{R, rangeX, echo=FALSE}
+summary(vhcls_data$range)
+range_vhcls <- vhcls_data[vhcls_data$rangeA == 0, c('range', 'rangeA', 'atvType')]
+nrow(range_vhcls)
+cor(vhcls_data[ , c('range', 'UCity')])
+ggplot(vhcls_data, aes(x=year, y=city08, group=year)) + geom_boxplot() + ggtitle("city08~year") + xlab("Year") + ylab("city08") 
+ggplot(vhcls_data, aes(x=year, y=city08U, group=year)) + geom_boxplot() + ggtitle("city08U~year") + xlab("Year") + ylab("city08U") 
+ggplot(vhcls_data, aes(x=year, y=cityA08, group=year)) + geom_boxplot() + ggtitle("cityA08~year") + xlab("Year") + ylab("cityA08") 
+ggplot(vhcls_data, aes(x=year, y=cityA08U, group=year)) + geom_boxplot() + ggtitle("cityA08U~year") + xlab("Year") + ylab("cityA08U") 
+```
+
+#### youSaveSpend
+
+- Definition 
+
+  - you save/spend over 5 years compared to an average car ($)
+
+- Remarks
+
+  - Storngly correlated with UCity (0.6583)
+  - youSaveSpend also shows a trend reversal at year 2010
+  - EV, Hybrid, Plug-in Hybrid and CNG vechicles return positive
+
+```{R, youSaveSpend, echo=FALSE}
+summary(vhcls_data$youSaveSpend)
+cor(vhcls_data[,c('youSaveSpend', 'UCity')])
+plot(vhcls_data[,c('youSaveSpend', 'UCity')], main='YouSaveSpend')
+ggplot(vhcls_data, aes(x=year, y=youSaveSpend, group=year)) + geom_boxplot(aes(x=year, y=youSaveSpend))
+ggplot(vhcls_data, aes(x=atvType, y=youSaveSpend, group=atvType)) + geom_boxplot(aes(x=atvType, y=youSaveSpend))
+```
+
+### Categorical + Logical {.tabset .tabset-fade .tabset-pills}
+
+#### cylinders_cat
+
+- Definition
+  - factorized cylinders variable
+
+```{R, echo=FALSE}
+vhcls_data$cylinders_cat <- as.factor(vhcls_data$cylinders)
+```
+#### drive
+
+- Definition
+
+  - drive - drive axle type
+
+- Remarks
+
+  - 1189 vehicle have missing values for drive, replaced with NA
+  - Different axle type have mixed relation with UCity. No clear indication of mutual information. cor(-0.117)
+
+```{R, drive, echo=FALSE}
+summary(vhcls_data$drive)
+#vhcls_data$drive <- as.factor(ifelse(vhcls_data$drive == '', NA, vhcls_data$drive))
+barplot(summary(vhcls_data$drive), las=2)
+ucity_drive <- vhcls_data[
+  complete.cases(
+    vhcls_data[, c('UCity', 'drive')]
+  ), c('UCity', 'drive')]
+nrow(ucity_drive)
+paste0('UCity~drive correlation ', round(cor(ucity_drive$UCity, as.numeric(ucity_drive$drive), method='spearman'), 4))
+
+for (drive in c(as.character(unique(ucity_drive$drive)))) {
+  boxplot(UCity~year, vhcls_data[vhcls_data$drive==drive,], main=paste0(drive, ' drive Vehicles'), ylim=c(0, 200))
+}
+```
+
+#### feScore_cat
+- Definition
+  - factorized cylinders variable
+  
+#### guzzler
+- Definition 
+  - guzzler- if G or T, this vehicle is subject to the gas guzzler tax
+- Remarks
+  - S value stand for guzzler tax exempt ?
+  - 37704 vehicles have missing values for guzzler (does that mean they are exempt from guzzler tax?)
+  - Remaining 2377 vehicles are FFV and Hybrid atvType vehicles
+  - As expected, guzzler tax paying vehicles have lower-end UCity
+  
+```{R, guzzler, echo=FALSE}
+summary(vhcls_data$guzzler)
+ggplot(vhcls_data, aes(x=year, y=guzzler, group=year)) + geom_boxplot() + ggtitle("guzzler~year")
+guzzler_vehicles <- vhcls_data[vhcls_data$guzzler != "",]
+unique(guzzler_vehicles[,'atvType'])
+plot(guzzler_vehicles[,c('guzzler', 'UCity')])
+```
+
+#### make, mfrCode
+- Definition
+  - make - manufacturer (division)
+  - mfrCode - 3-character manufacturer code
+- Remarks
+  - both variables contain same information. Either of them can be dropped.
+
+```{R, echo=FALSE}
+unique(vhcls_data[vhcls_data$year == 1985, c('make')])
+mfrCode_ <- sqldf('select count(distinct(make)) as Mfrs, year from vhcls_data group by year')
+plot(mfrCode_$year, mfrCode_$Mfrs)
+ggplot(vhcls_data, aes(x=year, y=mfrCode, group=year)) + geom_boxplot() + ggtitle("mfrCode~year")
+lm(UCity~mfrCode, vhcls_data)
+```
+
+#### mpgData
+- Definition
+  - has My MPG data
+- Remarks
+  - 12714 vehicles have mpgData Y
+  - Not a strong predictor for UCity
+
+```{R, echo=FALSE}
+mpgDataY= vhcls_data[vhcls_data$mpgData == 'Y',]
+nrow(mpgDataY)
+mpgDataY_Year <- sqldf('select count(*) As Count, year from mpgDataY group by year')
+ggplot(mpgDataY_Year, aes(x=year, y=Count, group=year)) + geom_boxplot() + ggtitle("mpgDataY~year") + xlab("Year") + ylab("mpgDataY")
+```
+
+#### phevBlended
+Definition
+  - phevBlended - if true, this vehicle operates on a blend of gasoline and electricity in charge depleting mode
+Remarks
+  - 40005 N, 76 Y
+  - For 76 Y vehicles, the phevBlended is a strong predictor
+```{R, echo=FALSE}
+summary(vhcls_data$phevBlended)
+summary(lm(UCity~phevBlended, data=vhcls_data))
+```
+
+#### trans_dscr
+
+- Definition
+
+  - trans_dscr - transmission descriptor;
+
+- Remarks
+
+  - 25034 vehicles have missing values for this variable
+  - SIL EMS transmission type is most important one (lm coef 33)
+    - These are Honda Civic and Insight cars (2004, 2005, 2006)
+  
+```{R, trans_desc, echo=FALSE}
+summary(vhcls_data$trans_dscr)
+summary(lm(UCity ~ trans_dscr, data=vhcls_data))
+sil_ems_vhcls <- vhcls_data[vhcls_data$trans_dscr == 'SIL EMS', c('UCity', 'make', 'model','year', 'atvType')]
+```
+
+#### trany
+
+- Definition
+  
+  - transmission type
+
+- Remarks
+  
+  - Most common transmission type is Automatic 4 and 4 Speed
+  - Automatic (A1) is the only positive coef (48) with global mean 88
+    - All Automatic (A1) vehicles are EV (including best UCity Hyundai vehicle Ioniq) except one Plug-in Hybrid BMW
+  - Over the years, Automatic transmission cars are beoming more and more common
+  - On broader categorization (Automatic, Manual), Manual transmission does improve UCity 1.43922 as much as.
+  
+```{R, echo=FALSE}
+summary(vhcls_data$trany)
+trany_count <- data.frame(Count=summary(vhcls_data$trany))
+o <- order(trany_count$Count, decreasing = T)
+barplot(trany_count[o, ], names.arg = rownames(trany_count)[o], las=2)
+summary(lm(UCity ~ trany, data=vhcls_data))
+a1_trany_vhcls <- vhcls_data[vhcls_data$trany == 'Automatic (A1)', c('UCity', 'make', 'model','year', 'atvType')]
+
+#vhcls_data$trany_new <- as.factor(ifelse(str_length(vhcls_data$trany)==0, 'Not Available', as.character(vhcls_data$trany)))
+vhcls_data$trany_new <- as.factor(ifelse(substr(as.character(vhcls_data$trany),1,4)=='Auto', 'Automatic', as.character(vhcls_data$trany_new)))
+vhcls_data$trany_new <- as.factor(ifelse(substr(as.character(vhcls_data$trany),1,4)!='Auto', 'Manual', as.character(vhcls_data$trany_new)))
+
+pie(summary(vhcls_data$trany_new))
+
+trany_ <- sqldf('select count(*) as Total, year, trany_new from vhcls_data group by year, trany_new order by trany_new')
+ggplot(trany_, aes(x=year, y=Total, group=trany_new)) +
+  geom_line(aes(linetype=trany_new, color=trany_new))+
+  geom_point(aes(shape=trany_new))+
+  theme(legend.position="right")
+summary(lm(UCity~trany_new, vhcls_data))
+
+```
+
+#### VClass
+
+- Definition
+
+  - EPA vehicle size class
+
+- Remarks
+
+  - Compact, Subcompact and Midsize cars are the top 3 in the data
+  - Special Purpose Verticia, Vans Passenger are the least
+  
+```{R, echo=FALSE}
+VClass_count <- data.frame(Count=summary(vhcls_data$VClass))
+o <- order(VClass_count$Count, decreasing = T)
+barplot(VClass_count[o, ], names.arg = rownames(VClass_count)[o], las=2, cex.names=.5)
+```
+
+  - Linear model does show the negative effect of vehicle class
+  - larger vehicles (Truck and Vans) the lower the UCity with global mean 26.5827
+
+```{R, echo=FALSE}
+summary(lm(UCity ~ VClass, data=vhcls_data))
+a1_trany_vhcls <- vhcls_data[vhcls_data$trany == 'Automatic (A1)', c('UCity', 'make', 'model','year', 'atvType')]
+```
+
+#### sCharger, tCharger
+
+- Definition
+  - sCharger - if S, this vehicle is supercharged
+
+- Remarks
+
+  - 6302 tCharger Vehicles
+  - 796 sCharger Vechiles
+  - large amount of missing values make these variables useless
+
+```{R, echo=FALSE}
+summary(vhcls_data$sCharger)
+sCharger_vhcls <- vhcls_data[vhcls_data$sCharger == 'S', c('atvType', 'sCharger', 'tCharger', 'UCity')]
+nrow(sCharger_vhcls)
+unique(sCharger_vhcls$atvType)
+
+summary(vhcls_data$tCharger)
+tCharger_vhcls <- vhcls_data[! is.na(vhcls_data$tCharger), c('atvType', 'sCharger', 'tCharger', 'UCity')]
+lm(UCity~tCharger, vhcls_data)
+unique(tCharger_vhcls$atvType)
+```
+
+#### year
+
+- Definition
+
+  - model year
+
+- Remarks
+
+  - 1984 to 2019
+  - Most vehicles have 1984 model
+  - Year 2010 is a turning point in UCity
+
+```{R, echo=FALSE}
+year_vhcls <- sqldf('select count(*) as Count, year from vhcls_data group by year')
+barplot(year_vhcls$Count, year_vhcls$year, names.arg = year_vhcls$year)
+vhcls_data$year_cat <- as.factor(vhcls_data$year)
+summary(vhcls_data[, c('year_cat', 'cylinders_cat')])
+summary(lm(UCity~year_cat, vhcls_data))
+```
+### Others {.tabset .tabset-fade .tabset-pills}
+#### engId 
+- Definition 
+  - EPA model type index
+  - Just an index variable. no use for prediction
+```{R}
+summary(vhcls_data$engId)
+```
+#### eng_desc
+eng_dscr - engine descriptor;
+
+```{R eng_desc}
+summary(vhcls_data$eng_desc)
+```
+
+#### id
+- Definition: Engine record id
+
+#### model
+- model - model name 
+
+## Summary Insights
+  - The dataset has two contrast cases of vehicles. (39829 non EV) and EV
+  - The median annual petroleum consumption (barrels08) is start to decrease post 2010. 
+  - A strong rise in FFV (dual fuel vehicles) during 2000-2010 period and the a sharp drop to the lowest.
+  - Premium and Regular fuelType vehicle are top co2 emitters
+  - cylinders are negatively correlated with UCity. (-0.8157), which indicates the bigger the vehicle the less the miles per gallon. Make sense.
+    - Vehicles with 4, 6 and 8 cylinders vehicles are getting slightly better on UCity in recent years
+  - over the years, displ distributions is not changing noticeably.
+  - youSaveSpend also shows a trend reversal at year 2010 - EV, Hybrid, Plug-in Hybrid and CNG vechicles return positive
+  - Most common transmission type is Automatic 4 and 4 Speed
+  - EV, Hybrid and Plug-in Hybrid are least expensive i.t.o fuelCost08 
+  - Over the years, Automatic transmission cars are beoming more and more common
+  - On broader categorization (Automatic, Manual), Manual transmission does improve UCity 1.43922 as much as.
+  - Compact, Subcompact and Midsize cars are the top 3 in the data
+  - Special Purpose Verticia, Vans Passenger are the least
+  - Most vehicles in the dataset are 1984 model 
+  - Year 2010 is a turning point in UCity

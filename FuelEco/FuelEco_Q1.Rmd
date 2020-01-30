@@ -1,0 +1,47 @@
+---
+title: "Fuel Economoy"
+author: "Uzair Ahmad"
+date: '2019-12-06'
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{R, load_libraries, message=F, warning=F}
+library(sqldf)
+library(ggplot2)
+```
+
+```{R, echo=FALSE}
+vhcls_data = read.csv('https://raw.githubusercontent.com/DrUzair/MLSD/master/Datasets/vehicles.csv')
+```
+
+# Asking the right questions: 
+
+## Which manufacturer produces the most fuel efficient fleet of cars?
+Considering UCcity be the measure of 'fuel efficiency', 
+
+1. The best UCity vehicle poducer is Hyundai
+  - Ioniq Electric- for cosecutive years 2017, 2018, 2019. All three models are EV Front-Wheel Drive vechicles. 
+
+```{r, echo=FALSE}
+top_ucity <- head(vhcls_data[order(vhcls_data$UCity, decreasing = TRUE ), c('make', 'model','UCity', 'year')], 10)
+print(top_ucity)
+```
+
+```{R, echo=FALSE}
+year_ucity <- sqldf('select max(Ucity) Best_UCity, make, drive, atvType, fuelType, fuelType1, fuelType2, year from vhcls_data group by year ')
+#unique(year_ucity$make)
+ggplot(year_ucity, aes(x=year, y=Best_UCity, color=make, shape=drive)) + 
+  geom_point(size=2) +
+  geom_text(label=substr(as.character(year_ucity[, 'atvType']), 1, 2), size=3, hjust=1, vjust=1)
+```
+
+2. Top 10 best UCity vehicles include Tesla, Scion and BMW vehicles.
+3. Over the years, the UCity has seen dramatic increase in last decade. All vehicles boasting UCity greater than 100 are EV Rear-wheel Drives except Hyundai's (the winner) Ioniq which is Front-wheel drive.
+4. Pre 2000s, Honda vehicles reported best UCity.
+5. Interestingly, top 10 best UCity vehicles are Automatic Transmission vehicles.
+6. Infact top 217 vehicles, w.r.t UCity, are EV vehicles. Which makes atvType an influential factor to determine UCity.
