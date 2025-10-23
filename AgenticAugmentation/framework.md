@@ -383,9 +383,8 @@ To reproduce results:
 If you use these prompts, please cite:
 
 ```
-[Your Paper Citation]
-An LLM-Powered Agentic Workflow for Augmenting Construction Defect Report 
-Classification in Low-Resource Settings
+CITE:
+U. Ahmad et al, "An Agentic Framework for Data Augmentation in Construction Defect Report Classification",
 Advanced Engineering Informatics, Elsevier, 2025
 ```
 
@@ -393,4 +392,4 @@ Advanced Engineering Informatics, Elsevier, 2025
 
 **Version**: 1.0  
 **Last Updated**: October 2025  
-**License**: [Your chosen license]
+**License**: MIT
